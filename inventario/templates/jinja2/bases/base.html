@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ventary Os</title>
+        <link rel="stylesheet" href="{{ static('Bootstrap/dist/css/bootstrap.css') }}" />
+        <link rel="stylesheet" href="{{ static('font-awesome/css/font-awesome.min.css') }}" />
+        <link rel="stylesheet" href="{{ static('css/self.css') }}" />
+        <script src="{{ static('js/self.js') }}"></script>
+        <script src="{{ static('js/jquery-3.1.1.js') }}"></script>
+        <script src="{{ static('Bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <script src="{{ static('js/bootbox.min.js') }}"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            @media print {
+                #print{
+                    display:none;
+                }
+            }
+        </style>
+    </head>
+<body>
+{% if request.user.is_authenticated %}
+<!-- Navbar top-->
+<nav class="navbar navbar-default bg4">
+  <div class="container font-black">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ url('default') }}">Ventory Os <i class="fa fa-industry"></i></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+            <!-- Buscamos en la base de datos los productos con este form en el nav -->
+            <form class="navbar-form" action="{{ url('article:search') }}" method="POST">
+                <div class="form-group text-center">
+                    <input type="text" class="form-control" placeholder="Buscar artículo" autocomplete="off" name="search" id="search">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                </div>
+                <button type="submit" class="btn btn-default"><span id="btn-search" class="glyphicon glyphicon-list-alt"></span></button>
+                <script>
+                    jQuery("#search").focus(function(){
+                        jQuery("#btn-search").attr("class", "glyphicon glyphicon-search");    
+                    }).focusout(function(){
+                        if(jQuery("#search").val()){
+                            jQuery("#btn-search").attr("class", "glyphicon glyphicon-search");
+                        }else{
+                            jQuery("#btn-search").attr("class", "glyphicon glyphicon-list-alt");
+                        }   
+                    });
+                </script>
+            </form>
+        </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+            {% if request.user.username == 'admin' %}
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-list-alt"></span></a>
+                <ul class="dropdown-menu">
+                        <li class="dropdown-header">Sección</li>
+                    <li><a href="{{ url('section:sections') }}"><span class="glyphicon glyphicon-plus"></span> Agregar sección</a></li>
+
+                    {% if sections_all() %}
+                    <li class="dropdown-header">Secciones</li>
+                    {% for section in sections_all() %}
+                        <li><a href="{{ url('section:information', args=[section.id])}}"><span class="glyphicon glyphicon-info-sign"></span> {{ section.name | replace('_', ' ') | title }}</a></li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
+
+            {% if sections_all() %}
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">Secciones</li>
+                    {% for section in sections_all() %}
+                        <li><a href="{{ url('article:add', args=[section.id]) }}"><span class="glyphicon glyphicon-upload"></span> {{ section.name | replace('_', ' ') | title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endif %}
+
+            {% endif %}
+
+            <li><a href="{{ url('shopping_cart:view_cart') }}" id="carrito"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0px">
+
+            {% if request.user.username == 'admin' %}
+            <img class="img-circle" src="{{ static('images/admin.png') }}" width="50"/></a>
+            {% else %}
+            <img class="img-circle" src="{{ static('images/work.png') }}" width="50"/></a>
+            {% endif %}
+
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url('shopping_cart:sales_record') }}"><i class="fa fa-list-alt"></i> Registro de ventas</a></li>
+
+                    <li><a href="{{ url('article:print_inventory') }}"><i class="fa fa-print"></i> Imprimir inventario</a></li>
+
+                    <li><a href="{{ url('shopping_cart:information') }}"><i class="fa fa-info-circle"></i>nformación</a></li>
+
+                    {% if request.user.username == 'admin' %}
+                    <li class="dropdown-header">Administracion</li>
+
+                    <li><a href="{{ url('article:increase') }}"><i class="fa fa-line-chart"></i> Aumentar precios</a></li>
+
+                    <li><a href="{{ url('user:config') }}"><i class="fa fa-cogs"></i> Configuración</a></li>
+                    {% endif %}
+
+                    <li><a href="{{ url('user:logout') }}" id="logout"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
+                </ul>
+            </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{% if request.user.is_authenticated %}
+<!-- navbar bottom -->
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+  <div class="container-fluid">
+      <div class="navbar-header">
+          <a class="navbar-brand" href="{{ url('shopping_cart:information') }}"><i class="fa fa-info-circle"></i>nformacion</a>
+      </div>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ url('shopping_cart:view_cart') }}" id="car-bar" data-toggle="tooltip" data-placement="top" title="Arctiulos en el carrito"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
+
+        <script>
+            jQuery(document).ready(function(){
+                if(!sessionStorage.articles){
+                    jQuery("#car-bar").append("0");
+                }else{
+                    var articles = JSON.parse(sessionStorage.articles);
+                    jQuery("#car-bar").append(articles.articles.length);
+                }
+            });
+        </script>
+
+        <li><a href="{{ url('shopping_cart:sales_record') }}" data-toggle="tooltip" data-placement="top" title="Ventas"><i class="fa fa-bar-chart"></i> {{ get_sales() }}</a></li>
+
+        <li><a href="{{ url('article:article_alerts') }}" data-toggle="tooltip" data-placement="top" title="Alertas"{% if alerts() %}style="color: red"{% endif %}><i class="fa fa-exclamation-circle" ></i> {% if alerts() %}{{ alerts()[0] }}{% else %}0{% endif%}</a></li>
+    </ul>
+  </div>
+</nav>
+{% endif %}
+{% endif %}
+{% block body %}
+
+{% endblock %}
+</body>
+</html>

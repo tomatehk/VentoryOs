@@ -1,0 +1,163 @@
+{% extends 'bases/base.html' %}
+
+{% block body %}
+<div class="container">
+    <h1 class="text-center">Configuración <i class="fa fa-cogs"></i></h1>
+    <br />
+
+    {% if messsage and error%}
+    <div class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>Perfecto!</strong> {{ messsage }}
+    </div>
+    {% elif messsage and not error %}
+    <div class="alert alert-success alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>Perfecto!</strong> {{ messsage }}
+    </div>
+    {% endif %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">Administrador</div>
+        <div class="panel-body">
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#password-admin">Cambiar contraseña <i class="fa fa-expeditedssl"></i></button>
+            <div id="password-admin" class="collapse">
+                <br />
+                <br />
+                <form class="form-horizontal" method="POST" id="form-admin">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-admin"><i class="fa fa-unlock"></i> Contraseña actual:</label>
+                        <div class="col-sm-3">
+                            <input type="password" class="form-control" id="pwd-admin" name="pwd-admin" placeholder="*****">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-new"><i class="fa fa fa-unlock-alt"></i> Nueva contraseña:</label>
+                        <div class="col-sm-3"> 
+                            <input type="password" class="form-control" id="pwd-new-admin" name="pwd-new-admin"placeholder="*****">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-new-repeat"><i class="fa fa-unlock-alt"></i> Repetir contraseña:</label>
+                        <div class="col-sm-3"> 
+                            <input type="password" class="form-control" id="pwd-new-repeat-admin" name="pwd-new-repeat-admin" placeholder="*****">
+                        </div>
+                    </div>
+                    <div class="form-group"> 
+                        <div class="col-sm-offset-3 col-sm-6 btn-submit">
+                            <button type="button" class="btn btn-success">Aceptar <i class="fa fa-check-circle-o"></i></button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" value="change-password-admin">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <script>
+                        jQuery(document).ready(function(){
+                            jQuery(".btn-submit").click(function(event){
+                                var password = jQuery("#pwd-new-admin").val();
+                                var password_repeat = jQuery("#pwd-new-repeat-admin").val();
+
+                                if(password == password_repeat){
+                                    jQuery("#form-admin").submit();
+                                }else{
+                                    bootbox.alert("Las contraseñas no coinciden");
+                                }
+                            });
+                        });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading">Empleado</div>
+        <div class="panel-body">
+            <button class="btn btn-success" data-toggle="collapse" data-target="#password-work">Cambiar contraseña <i class="fa fa-expeditedssl"></i></button>
+            <div id="password-work" class="collapse">
+                <br />
+                <br />
+                <form class="form-horizontal" method="POST" id="form-work">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-admin-2"><i class="fa fa-get-pocket"></i> Contraseña:</label>
+                        <div class="col-sm-3">
+                            <input type="password" class="form-control" id="pwd-admin-2" name="pwd-admin" placeholder="*****">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-new"><i class="fa fa fa-unlock-alt"></i> Nueva contraseña:</label>
+                        <div class="col-sm-3"> 
+                            <input type="password" class="form-control" id="pwd-new" placeholder="*****" name="pwd-new-work">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="pwd-new-repeat"><i class="fa fa-unlock-alt"></i> Repetir contraseña:</label>
+                        <div class="col-sm-3"> 
+                            <input type="password" class="form-control" id="pwd-new-repeat" placeholder="*****" name="pwd-new-repeat-work">
+                        </div>
+                    </div>
+                    <div class="form-group"> 
+                        <div class="col-sm-offset-3 col-sm-6">
+                            <button type="submit" class="btn btn-success">Aceptar <i class="fa fa-check-circle-o"></i></button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" value="change-password-work">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <script>
+                        jQuery(document).ready(function(){
+                            jQuery("#clear-registry").click(function(){
+                                jQuery.ajax({
+                                url: '{{ url("user:config") }}',
+                                type: 'POST',
+                                data: 'csrfmiddlewaretoken={{ csrf_token }}',
+                                success: function() {
+                                    alert('si');
+                                },
+                                error: function() {
+                        
+                                }
+                                });
+                    
+                            });
+                        });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading">Registro</div>
+        <div class="panel-body">
+            <i class="fa fa-list-alt"></i> Borrar registro de ventas <button type="button" id="clear-registry" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+            <p class="text-danger"><i class="fa fa-exclamation-triangle"></i> Advertencia! Esto vaciara tanto el registro de clientes como el de ventas.</p>
+            <script>
+            jQuery(document).ready(function(){
+                jQuery("#clear-registry").click(function(){
+                    jQuery.ajax({
+                        url: '{{ url("user:config") }}',
+                        type: 'POST',
+                        data: {csrfmiddlewaretoken: '{{ csrf_token }}', action: 'clear-registry'},
+                        success: function() {
+                            bootbox.alert({
+                                message: "¡Perfecto registro eliminado! <i class='fa fa-check-circle-o'></i>",
+                                size: 'small'
+                            });
+                        },
+                        error: function() {
+                            bootbox.alert({
+                                message: "¡Error al eliminar registro! <i class='fa fa-close'></i>",
+                                size: 'small'
+                            });
+                        }
+                    });
+                    
+                });
+            });
+            </script>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+
+{% endblock %}

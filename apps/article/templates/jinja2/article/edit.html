@@ -1,0 +1,73 @@
+{% extends 'bases/base.html' %}
+{% block body %}
+<div class="container-fluid bg-2 text-center">
+  <h2 class="margin">{{ section | replace('_', ' ') | title }} <span class="glyphicon glyphicon-list-alt"></span></h2>
+</div>
+<div class="container">
+  {% if columns|length > 2 %}
+  <h3 class="text-center">Editar artículo <span class="glyphicon glyphicon-pencil"></span></h3>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <form action="{{ url('article:edit') }}" method="post" id="form_edit">
+                {% for column in columns %}
+                    {% if column != 'id' %}
+                    <div class="form-group">
+                        <label for="{{ column }}">{{ column | title | replace('_', ' ') }}:</label>
+                        <input type="{% if column == 'cantidad' %}number{% else %}text{% endif %}" class="form-control" id="{{ column }}" name="{{ column }}" required autocomplete="off" min=1 value="{{'' if article[0][0][loop.index] == None else article[0][0][loop.index]}}">
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="save">Editar <span class="glyphicon glyphicon-pencil"></span></button>
+                    <button type="reset" class="btn btn-danger">Reiniciar campos <span class="glyphicon glyphicon-repeat"></span></button>
+                </div>
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <input type="hidden" name="edit" value="{{article[0][0][0]}}">
+                <input type="hidden" name="section" value="{{section.id}}">
+            </form>
+            <script>
+            jQuery(document).ready(function(){
+                jQuery("#form_edit").submit(function(){
+                    jQuery("#save").attr('disabled', true);
+                    jQuery.ajax({
+                        url: "{{ url('article:edit') }}",
+                        data: jQuery("#form_edit").serialize(),
+                        type: 'POST',
+                        success: function (data, textStatus, jqXHR){
+                            bootbox.alert({
+                                message: data.message + " <i class='fa fa-smile-o'></i>",
+                                callback: function (){
+                                    window.location.reload();
+                                }
+                            });
+                        },
+                        error: function (data, textStatus, jqXHR){
+                            bootbox.alert({
+                                message: "¡Has introducido datos no validos!",
+                                callback: function (){
+                                    jQuery("#save").attr('disabled', false);
+                                }
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+            </script>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+  {% else %}
+    <div class="container-fluid bg-5 text-center">
+        <div class="jumbotron">
+           <h3>Opps! no has creado campos en esta seccion, solo se encuentran los campos por defecto <i class="fa fa-frown-o"></i></h3> 
+        </div>  
+    </div>
+  {% endif %}
+</div>
+<br />
+<br />
+<br />
+{% endblock %}

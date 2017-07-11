@@ -1,0 +1,154 @@
+{% extends 'bases/base.html' %}
+{% block body %}
+{% if not get_user() %}
+<div class="container text-center">
+    <div class="jumbotron blue-color">
+        <h1 style="color:white">Ventory Os <i class="fa fa-industry"></i></h1>
+        <br />
+
+        <div id="generate" class="collapse">
+            <h1><i class="fa fa-connectdevelop fa-spin font-white fa-3x"></i></h1>
+            <br/>
+
+            <h2 id="message_const" class="font-white">¡Empecemos!</h2>
+
+            <div class="progress">
+                <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:10%" id="bar">
+                10%
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-lg bg2" id="active_ventory" data-toggle="collapse" data-target="#generate"><h2>Activar sistema <i class="fa fa-check-square-o fa-lg"></i></h2></button>
+
+        <script> 
+                jQuery(document).ready(function($){
+                jQuery("#active_ventory").click(function(event){
+                    jQuery(this).hide();
+
+                    var progress = 10;
+                    var interval = null;
+
+                    function increment_bar(){
+                        if(progress == 30){
+                                    jQuery("#message_const").text("Construyendo base de datos");
+                        }else if(progress == 50){
+                                    jQuery("#message_const").text("Creando usuarios");
+                        }else if(progress == 80){
+                                    jQuery("#message_const").text("Creando registradores");
+                        }else if(progress == 100){
+                                    jQuery("#message_const").text("¡Ya casi esta listo!");
+                        }else if(progress > 100){
+                            clearInterval(interval);
+                            window.location.reload();    
+                        }
+
+                        if(progress <= 100){
+                            var width = jQuery("#bar").css('width', progress + "%");
+                            jQuery("#bar").text(progress + "%");
+                            progress += 10;
+                        }
+                    } 
+
+                    jQuery.ajax({
+                        url: '{{ url("user:active") }}',
+                        type: 'GET',
+                        success: function(){
+                            invterval = setInterval(increment_bar, 1500);
+                        },
+                        error: function(request, status, error){
+                            alert("ERROR");
+                        }
+                    });
+                });
+            });
+
+            jQuery("body").addClass('blue-color');
+        </script>
+    </div>
+</div>
+{% else %}    
+<div class="container text-center">
+    <div class="container">
+        <div class="jumbotron">
+            <h1 style="color:white">Ventory Os <i class="fa fa-industry"></i></h1> 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 text-center"></div>
+        <div class="col-md-4 text-center margin-help">
+            <div class="btn-group-vertical">
+                <button class="btn btn-primary role" id="btn-admin" data-toggle="collapse" data-target="#admin"><img class="img-circle" src="{{ static('images/admin.png') }}" width="130"/> Administrador</button>
+                <!-- trabajador normal -->
+                <button class="btn btn-warning role" id="btn-work" data-toggle="collapse" data-target="#work"><img class="img-circle" src="{{ static('images/work.png') }}" width="130"/> Empleado</button>
+            </div>
+        </div>
+            <div class="col-md-4 margin-help">
+                <div id="admin" class="collapse blue-color img-rounded padding-10">
+                <img class="img-circle" src="{{ static('images/admin.png') }}" width="130"/>
+                    <form action="{{ url('user:login') }}" method="POST">
+                    <br />
+                        <div class="form-group">
+                            <input type="hidden" name="user" value="admin"/>
+                            <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Entrar</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    </form>
+                </div>
+
+                <div id="work" class="collapse orange-color img-rounded padding-10">
+                    <img class="img-circle" src="{{ static('images/work.png') }}" width="130"/>
+                    <form action="{{ url('user:login') }}" method="POST">
+                    <br />
+                        <div class="form-group">
+                            <input type="hidden" name="user" value="work"/>
+                            <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Entrar</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    </form>
+                </div>
+            </div>
+                <script>
+                    sessionStorage.removeItem('articles');
+                    jQuery(document).ready(function(){
+
+                        jQuery('.role').click(function(){
+                            var button_show = jQuery(this).attr('data-target');
+                            jQuery(this).attr('disabled', 'disabled');
+
+                            if(button_show == '#admin')
+                            {
+                                jQuery('#work').hide();
+                                jQuery('#admin').show();
+                                jQuery('#btn-work').show().removeAttr('disabled');
+                                jQuery('body').removeClass('orange-color').addClass('blue-color');
+                                jQuery('.jumbotron').removeClass('blue-color').addClass('orange-color');
+                            }else{
+                                jQuery('#admin').hide();
+                                jQuery('#work').show();
+                                jQuery('#btn-admin').show().removeAttr('disabled');
+                                jQuery('body').removeClass('blue-color').addClass('orange-color');
+                                jQuery('.jumbotron').removeClass('orange-color').addClass('blue-color');
+                            }
+                        });
+
+                        {% if error %}
+                            bootbox.alert({
+                                message: '<p class="text-center">{{ error.message }} <span class="glyphicon glyphicon-alert"></span></p>',
+                            });
+                            jQuery('#btn-{{ error.user }}').trigger('click');
+                            jQuery('#btn-{{ error.user }}').attr('disabled', 'disabled');
+                        {% else %}
+                            jQuery('#btn-work').trigger('click');
+                            jQuery('#btn-work').attr('disabled', 'disabled');
+                        {% endif %}
+                    });       
+                </script>
+        <div class="col-md-2 text-center"></div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

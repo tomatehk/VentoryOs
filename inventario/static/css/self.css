@@ -1,0 +1,54 @@
+.bg2{
+    background: white;
+}
+
+.bg3{
+    background: gray;
+}
+
+.bg4{
+    background: rgb(0, 157, 86);
+    border-color: rgb(0, 157, 86);
+    color: red;
+}
+
+.margin-help{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.padding-10{
+    padding: 10px;
+}
+
+.blue-color{
+    background: rgb(40,96,144);
+}
+
+.orange-color{
+    background: rgb(236, 151, 31);
+}
+
+.red-color{
+    background-color: red;
+}
+
+.font-white{
+    color: white;
+}
+
+.green-color{
+    background: rgb(0, 157, 86);
+}
+
+.scroll{
+    height: 800px;
+    overflow: scroll;
+}
+
+@media print{
+    .print{
+        color: red;
+    }
+}

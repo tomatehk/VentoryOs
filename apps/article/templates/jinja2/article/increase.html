@@ -1,0 +1,96 @@
+{% extends 'bases/base.html' %}
+
+{% block body %}
+    {% if not sections_all() %}
+        <div class="container jumbotron text-center">
+            <h1 class="text-center">No existen secciones para aumentar de precio <i class="fa fa-exclamation-triangle"></i></h1>
+        </div>
+    {% else %}
+    <div class="container">
+        <h1 class="text-center">Aumentar precios <i class="fa fa-line-chart"></i></h1>
+    </div>
+    <br />
+    <div class="container text-center">
+    {% if message %}
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>{{ message }}</strong>.
+        </div>
+    {% endif %}
+        
+    <a href="{{ url('article:increase_registry') }}" class="btn btn-danger">Registro de aumentos <i class="fa fa-line-chart"></i></a>   
+
+    <form action="{{ url('article:increase') }}" method="POST" id="form-increase">
+    <br /> 
+        <div class="form-group">
+        <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-list-alt"></span></span>
+            <select class="form-control input-lg" name="section" id="section">
+                <option value="nothing">Selecciona</option>
+                <option value="all">Todas</option>
+                {% for section in sections_all() %}
+                <option value="{{ section }}">{{ section | title | replace('_', ' ') }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="form-group">
+        <div class="row">
+        <div class="col-md-6 col-md-offset-3">    
+            <div class="input-group">
+            <select class="form-control input-lg" name="percentage" id="percentage">
+            {% for x in range(1, 101) %}
+                <option value="{{ x }}">{{ x }}</option>
+            {% endfor %}
+            </select>
+            <span class="input-group-addon">%</span>
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button type="button" class="btn btn-primary" id="btn-increase">Aumentar <i class="fa fa-check-circle-o"></i></button>
+    </form>
+    <script>
+    jQuery(document).ready(function(){
+
+        jQuery("#btn-increase").attr("disabled", true);
+
+        jQuery("#section").change(function(event) {
+            var value = jQuery("#section").val();
+
+            if(value == "nothing")
+            {
+                jQuery("#btn-increase").attr("disabled", true);
+            }else{
+                jQuery("#btn-increase").removeAttr("disabled");
+            }
+        });
+
+        jQuery("#btn-increase").click(function(){
+            var percentage = jQuery("#percentage").val();
+
+            bootbox.confirm("¿Seguro quieres aumentar los precios? " + percentage + "%", 
+                            function(result){ 
+                                if(result)
+                                {
+                                    jQuery("#form-increase").submit();
+                                }
+
+            });
+        });
+    });
+    </script>
+    </div>
+
+<br />
+<br />
+<br />
+    {% endif %}
+{% endblock %}
