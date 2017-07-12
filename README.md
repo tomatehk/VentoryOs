@@ -10,7 +10,7 @@ Modulo necesario para apache:
 + mod_wsgi
 
 Modulos necesarios para el entorno virtual de python:
-+ DJango 1.11
++ Django 1.11
 + psycopg2
 + jinja2
 
