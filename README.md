@@ -1,5 +1,5 @@
 # VentaryOs
-Sistema de inventario
+Sistema de inventario Open Source
 
 # Requisitos
 + Apache 2.4
@@ -9,7 +9,7 @@ Sistema de inventario
 Modulo necesario para apache:
 + mod_wsgi
 
-Debe existir en el entorno virtual de python los siguientes modulos:
+Modulos necesarios para el entorno virtual de python:
 + DJango 1.11
 + psycopg2
 + jinja2
