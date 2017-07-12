@@ -1,4 +1,4 @@
-# VentaryOs
+# Ventary Os
 Sistema de inventario Open Source
 
 # Requisitos
