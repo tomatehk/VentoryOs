@@ -16,8 +16,8 @@ from ..shopping_cart.models import Sale, Client
 
 def active(request):
     # creamos los usuarios
-    admin = User.objects.create_user('admin', 'brandomhk@gmail.com', '123456')
-    work = User.objects.create_user('work', 'quiensabeluis@gmail.com', '123456')
+    admin = User.objects.create_user('admin', 'holamundo2@gmail.com', '123456')
+    work = User.objects.create_user('work', 'holamundo3@gmail.com', '123456')
 
     # guardamos los usuarios
     admin.save()

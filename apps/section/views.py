@@ -17,7 +17,7 @@ from django.shortcuts import render
 from ..utils import *
 # autenticacion
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from inventario.settings import *
+from ventoryos.settings import *
 
 
 class DefaultView(LoginRequiredMixin, View):

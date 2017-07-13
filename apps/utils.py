@@ -45,7 +45,7 @@ def getCOlumnsSort(details):
 def connectDb():
     """Connexion rapida por via psycopg"""
     try:
-        connectdb = psycopg2.connect(database='inventario', user='postgres',
+        connectdb = psycopg2.connect(database='ventoryos', user='postgres',
                                      password='0107alina', host='localhost')
     except psycopg2.Error as e:
         return e
