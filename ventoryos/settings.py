@@ -153,5 +153,5 @@ STATIC_URL = '/static/'
 "Inportando la carpeta static en el projecto"
 
 STATICFILES_DIRS = [
-    "/home/brandomhk/workspace/ventoryos/ventoryoso/static/"
+    "/home/brandomhk/workspace/ventoryos/ventoryos/static/"
 ]
