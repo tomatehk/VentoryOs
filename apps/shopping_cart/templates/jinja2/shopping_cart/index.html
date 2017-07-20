@@ -1,218 +1,203 @@
 {% extends 'bases/base.html' %}
-
 {% block body %}
-<div class="container-fluid text-center">
-    <div class="row" id="row">    
-        <br />
-        <div class="col-md-6 text-center" id="client-info">
-        </div>   
+    <div class="container-fluid text-center">
+        <div class="row" id="row">
+            <br />
+            <div class="col-md-6 text-center" id="client-info">
+            </div>
+        </div>
     </div>
-</div>
     <script>
-        if(sessionStorage.articles){
-            jQuery('#row').before('<h1 class="text-center">Carrito de compras <span class="glyphicon glyphicon-shopping-cart"></span</h1>'); 
+    if(sessionStorage.articles){
+jQuery('#row').before('<h1 class="text-center">Carrito de compras <span class="glyphicon glyphicon-shopping-cart"></span</h1>');
+var articles = JSON.parse(sessionStorage.articles);
+var table = '<div id="articles" class="col-md-6 text-center scroll">\
+    <table class="table table-bordered">\
+        <thead>\
+            <tr class="blue-color font-white">\
+                <th colspan="4" class="text-center"><h1>Artículos <i class="fa fa-th-large"></i></h1></th>\
+            </tr>\
+            <tr class="orange-color">\
+                <th>\
+                    Artículo\
+                </th>\
+                <th>\
+                    Cantidad\
+                </th>\
+                <th>\
+                    Costo\
+                </th>\
+                <th class="text-center">\
+                    Acción\
+                </th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+        </tbody>\
+    </table>\
+</div>';
+jQuery('#client-info').before(table);
+//monto total a pagar
+total = 0;
+for(i = 0; i < articles.articles.length; i++){
+var article = '<tr class="parent bg2" pos_article='+i+'>\
+    <td>\
+        '+articles.articles[i][1]+'\
+    </td>\
+    <td>\
+        '+articles.articles[i][2]+'\
+    </td>\
+    <td>\
+        '+formatNumber.new(articles.articles[i][3])+'\
+    </td>\
+    <td class="text-center">\
+        <div class="btn-group">\
+            <a href="#" class="btn btn-danger btn-remove" data-toggle="tooltip" data-placement="top" title="Eliminar del carrito"><span class="glyphicon glyphicon-remove"></span></a>\
+        </div>\
+    </td>\
+</tr>';
+total += articles.articles[i][3];
+jQuery("tbody").append(article);
+}
+//Total iva
+var iva = Math.round((total*12)/100, 0);
+button_sale = '<form action="#" id="form_cart" method="POST">\
+    <table class="table">\
+        <thead>\
+            <tr>\
+                <th colspan="4" class="text-center"><h1 class="font-white">Datos Cliente <i class="fa fa-id-card"></i></h1>\
+                </th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr class="info">\
+                <td colspan="3"><b>Nombre: </b></td>\
+                <td><input type="text" class="form-control" name="name" required autocomplete="off"/></td>\
+            </tr>\
+            <tr class="info">\
+                <td colspan="3"><b>Cedula: </b></td>\
+                <td><input type="text" class="form-control" name="c_i" autocomplete="off" required/></td>\
+            </tr>\
+            <tr class="info">\
+                <td colspan="3"><b>Metodo/Pago:</b></td>\
+                <td>\
+                    <select class="form-control" name="type_pay">\
+                        <option value="ef">Efectivo</option>\
+                        <option value="po">Punto de venta</option>\
+                    </select>\
+                </td>\
+            </tr>\
+            <tr class="orange-color">\
+                <td colspan="2"><b>Subtotal:</b></td>\
+                <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(total-iva)+'</b></td>\
+            </tr>\
+            <tr class="orange-color">\
+                <td colspan="2"><b>IVA 12%:</b></td>\
+                <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(iva)+'</b></td>\
+            </tr>\
+            <tr class="orange-color">\
+                <td colspan="2"><b>Total:</b></td>\
+                <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(total)+'</b></td>\
+            </tr>\
+            <tr class="info">\
+                <td colspan="4" class="text-center">\
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">\
+                    <button type="submit" class="btn btn-primary" id="buy" data-toggle="tooltip" data-placement="top" title="Vender">Vender <i class="fa fa-cart-arrow-down"></i></button>\
+                </td>\
+            </tr>\
+        </tbody>\
+    </table>\
+</form>';
+jQuery('#client-info').addClass('blue-color');
+jQuery('#client-info').append(button_sale);
+//compra de articulos
+jQuery("#form_cart").submit(function(){
+total = total;
+articles = JSON.stringify(articles);
+//dataos aneviar por post
+data = jQuery("#form_cart").serialize()+"&total="+total+"&articles="+articles;
 
-            var articles = JSON.parse(sessionStorage.articles);
-            var table = '<div id="articles" class="col-md-6 text-center scroll">\
-            <table class="table table-bordered">\
-                <thead>\
-                    <tr class="blue-color font-white">\
-                        <th colspan="4" class="text-center"><h1>Artículos <i class="fa fa-th-large"></i></h1></th>\
-                    </tr>\
-                    <tr class="orange-color">\
-                        <th>\
-                            Artículo\
-                        </th>\
-                        <th>\
-                            Cantidad\
-                        </th>\
-                        <th>\
-                            Costo\
-                        </th>\
-                        <th class="text-center">\
-                            Acción\
-                        </th>\
-                    </tr>\
-                </thead>\
-                <tbody>\
-                </tbody>\
-            </table>\
-            </div>';
+bootbox.confirm({
+message: "¿Seguro quieres realizar la venta?",
+buttons: {
+confirm: {
+label: 'Si',
+className: 'btn-success'
+},
+cancel: {
+label: 'No',
+className: 'btn-danger'
+}
+},
+callback: function(result){
+if(result){
+jQuery.ajax({
+url: '{{ url("shopping_cart:buy") }}',
+type: 'POST',
+data: data,
+success: function(data, textStatus, jqXHR){
+sessionStorage.removeItem('articles');
+bootbox.alert({
+message: data.message + "<i class='fa fa-smile-o'></i>",
+callback: function (){
+window.location.reload();
+}
+});
+},
+error: function (data, textStatus, jqXHR){
+bootbox.alert({
+message: "Error, verificar el formulario de clientes",
+callback: function (){
+window.location.reload();
+}
+});
+}
+});
+}
+}
+});
 
-            jQuery('#client-info').before(table);
-
-            //monto total a pagar
-            total = 0;
-            for(i = 0; i < articles.articles.length; i++){
-                var article = '<tr class="parent bg2" pos_article='+i+'>\
-                    <td>\
-                        '+articles.articles[i][1]+'\
-                    </td>\
-                     <td>\
-                         '+articles.articles[i][2]+'\
-                    </td>\
-                     <td>\
-                         '+formatNumber.new(articles.articles[i][3])+'\
-                    </td>\
-                    <td class="text-center">\
-                        <div class="btn-group">\
-                            <a href="#" class="btn btn-danger btn-remove" data-toggle="tooltip" data-placement="top" title="Eliminar del carrito"><span class="glyphicon glyphicon-remove"></span></a>\
-                        </div>\
-                    </td>\
-                </tr>';
-
-                total += articles.articles[i][3];
-
-                jQuery("tbody").append(article);
-            }
-
-            //Total iva
-            var iva = Math.round((total*12)/100, 0);
-
-            button_sale = '<form action="#" id="form_cart" method="POST">\
-            <table class="table">\
-            <thead>\
-                <tr>\
-                    <th colspan="4" class="text-center"><h1 class="font-white">Datos Cliente <i class="fa fa-id-card"></i></h1>\
-                    </th>\
-                </tr>\
-            </thead>\
-            <tbody>\
-                <tr class="info">\
-                    <td colspan="3"><b>Nombre: </b></td>\
-                    <td><input type="text" class="form-control" name="name" required autocomplete="off"/></td>\
-                </tr>\
-                <tr class="info">\
-                    <td colspan="3"><b>Cedula: </b></td>\
-                    <td><input type="text" class="form-control" name="c_i" autocomplete="off" required/></td>\
-                </tr>\
-                <tr class="info">\
-                    <td colspan="3"><b>Metodo/Pago:</b></td>\
-                    <td>\
-                        <select class="form-control" name="type_pay">\
-                            <option value="ef">Efectivo</option>\
-                            <option value="po">Punto de venta</option>\
-                        </select>\
-                    </td>\
-                </tr>\
-                <tr class="orange-color">\
-                    <td colspan="2"><b>Subtotal:</b></td>\
-                    <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(total-iva)+'</b></td>\
-                </tr>\
-                <tr class="orange-color">\
-                    <td colspan="2"><b>IVA 12%:</b></td>\
-                    <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(iva)+'</b></td>\
-                </tr>\
-                <tr class="orange-color">\
-                    <td colspan="2"><b>Total:</b></td>\
-                    <td colspan="2" class="text-center"><b>Bs: '+formatNumber.new(total)+'</b></td>\
-                </tr>\
-                <tr class="info">\
-                    <td colspan="4" class="text-center">\
-                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">\
-                        <button type="submit" class="btn btn-primary" id="buy" data-toggle="tooltip" data-placement="top" title="Vender">Vender <i class="fa fa-cart-arrow-down"></i></button>\
-                    </td>\
-                </tr>\
-            </tbody>\
-            </table>\
-            </form>';
-            jQuery('#client-info').addClass('blue-color');
-            jQuery('#client-info').append(button_sale);    
-
-            //compra de articulos
-            jQuery("#form_cart").submit(function(){
-                total = total;
-                articles = JSON.stringify(articles);
-
-                //dataos aneviar por post
-                data = jQuery("#form_cart").serialize()+"&total="+total+"&articles="+articles;
-                
-                bootbox.confirm({
-                message: "¿Seguro quieres realizar la compra?",
-                buttons: {
-                    confirm: {
-                        label: 'Si',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: 'No',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function(result){
-                    if(result){
-                        jQuery.ajax({
-                            url: '{{ url("shopping_cart:buy") }}',
-                            type: 'POST',
-                            data: data,
-                            success: function(data, textStatus, jqXHR){
-                                sessionStorage.removeItem('articles');
-
-                                bootbox.alert({
-                                    message: data.message + "<i class='fa fa-smile-o'></i>",
-                                    callback: function (){
-                                        window.location.reload();
-                                    }
-                                });
-                            },
-                            error: function (data, textStatus, jqXHR){
-                                bootbox.alert({
-                                    message: "Error, verificar el formulario de clientes",
-                                    callback: function (){
-                                        window.location.reload();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-                }); 
-            
-                return false;
-            });
-        }
-        else{
-            var message_not_car = '<div class="container jumbotron text-center bg2">\
-            <h1 class="text-center">Carrito vacío <i class="fa fa-exclamation-triangle"></i></h1>\
-            <img src="{{ static('images/car_shopping_empty.jpg') }}" width="250"/>\
-            </div>';
-            jQuery('#client-info').after(message_not_car);
-        }
-
-        //remover arcitulo de del carrito
-        jQuery(".btn-remove").click(function(){
-            var pos_article = jQuery(this).parent().parent().parent().attr('pos_article');
-
-            bootbox.confirm({
-                message: "¿Seguro quieres eliminar del carrito?",
-                buttons: {
-                    confirm: {
-                        label: 'Si',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: 'No',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function(result){
-                    if(result){
-                        articles.articles.splice(pos_article, 1);
-
-                        //verificamos si existen articulos si no removemos la session
-                        if(articles.articles.length == 0){
-                            sessionStorage.removeItem('articles');
-                            window.location.reload();
-                        }else{
-                            sessionStorage.articles = JSON.stringify(articles);
-                            window.location.reload();
-                        }
-                    }
-
-                }
-            }); 
-        });
-    </script>
+return false;
+});
+}
+else{
+var message_not_car = '<div class="container jumbotron text-center bg2">\
+    <h1 class="text-center">Carrito vacío <i class="fa fa-exclamation-triangle"></i></h1>\
+    <img src="{{ static('images/car_shopping_empty.jpg') }}" width="250"/>\
+</div>';
+jQuery('#client-info').after(message_not_car);
+}
+//remover arcitulo de del carrito
+jQuery(".btn-remove").click(function(){
+var pos_article = jQuery(this).parent().parent().parent().attr('pos_article');
+bootbox.confirm({
+message: "¿Seguro quieres eliminar del carrito?",
+buttons: {
+confirm: {
+label: 'Si',
+className: 'btn-success'
+},
+cancel: {
+label: 'No',
+className: 'btn-danger'
+}
+},
+callback: function(result){
+if(result){
+articles.articles.splice(pos_article, 1);
+//verificamos si existen articulos si no removemos la session
+if(articles.articles.length == 0){
+sessionStorage.removeItem('articles');
+window.location.reload();
+}else{
+sessionStorage.articles = JSON.stringify(articles);
+window.location.reload();
+}
+}
+}
+});
+});
+</script>
 <br />
 <br />
 <br />

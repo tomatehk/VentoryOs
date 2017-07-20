@@ -46,7 +46,7 @@ def connectDb():
     """Connexion rapida por via psycopg"""
     try:
         connectdb = psycopg2.connect(database='ventoryos', user='postgres',
-                                     password='0107alina', host='localhost')
+                                     password='ventoryos', host='localhost')
     except psycopg2.Error as e:
         return e
 
@@ -96,7 +96,7 @@ def getAlerts():
             conectdb = connectDb()
             cursor = conectdb.cursor()
             # realizamos el string que sera la consulta
-            query = "SELECT id, cantidad FROM %s WHERE cantidad < %i" % (x.name, x.minimum)
+            query = "SELECT id, cantidad FROM %s WHERE cantidad <= %i" % (x.name, x.minimum)
             cursor.execute(query)
             result = cursor.fetchall()
 

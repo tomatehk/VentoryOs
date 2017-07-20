@@ -8,8 +8,9 @@ from ..utils import *
 import psycopg2
 # autenticacion
 from django.contrib.auth.mixins import LoginRequiredMixin
-# autorizacion por permission
-from django.contrib.auth.mixins import PermissionRequiredMixin
+# vista para el delete
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
 # paginador
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
@@ -61,7 +62,7 @@ class Buy(LoginRequiredMixin, View):
             cursor.close()
             conectdb.close()
 
-            message = '¡Compra realizada con exito!'
+            message = '¡Venta realizada con exito!'
             return JsonResponse({'message': message}, status=200)
 
         except psycopg2.Error:
@@ -76,8 +77,8 @@ class SalesRecord(LoginRequiredMixin, View):
 
     def get(self, request):
         registry = Sale.objects.all().order_by('-pub_date')
-        paginator = Paginator(registry, 10)
-        # obetenmos la pagina a mostrar
+        paginator = Paginator(registry, 30)
+        # obtenmos la pagina a mostrar
         page = request.GET.get('page')
 
         try:
@@ -107,6 +108,13 @@ class SalesRecord(LoginRequiredMixin, View):
                           {'client': client, 'total': total['price__sum'], 'sales': sales})
         else:
             return render(request, 'shopping_cart/client_search.html')
+
+
+class SaleDelete(LoginRequiredMixin, DeleteView):
+    template_name = 'shopping_cart/sale_delete.html'
+    model = Sale
+    context_object_name = 'sale'
+    success_url = reverse_lazy('shopping_cart:sales_record')
 
 
 class Information(LoginRequiredMixin, View):

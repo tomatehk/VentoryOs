@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ventoryos',
         'USER': 'postgres',
-        'PASSWORD': '0107alina',
+        'PASSWORD': 'ventoryos',
         'HOST': 'localhost',
         'PORT': '5432',
     }

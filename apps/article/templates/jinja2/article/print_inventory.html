@@ -1,19 +1,18 @@
 {% extends "bases/base.html" %}
-
 {% block body %}
     <h2 class="text-center"><button type="" class="btn btn-lg btn-primary print" id="print"><span class="fa fa-print"></span> Imprimir</button></21>
     
     <script>
     jQuery(document).ready(function(){
-        jQuery("#print").click(function(){
-            window.print();
-        });
+    jQuery("#print").click(function(){
+    window.print();
+    });
     });
     </script>
     <h1 class="text-center">Inventario <span class="glyphicon glyphicon-copy"></h1>
-    {% for section, columns in sections.items() %}
-        <br />
-        <div class="container">
+        {% for section, columns in sections.items() %}
+            <br />
+            <div class="container">
                 <table class="table table-bordered text-center">
                     <thead>
                         <tr>
@@ -23,94 +22,90 @@
                             {% for column in sections_columns[section] %}
                                 <th class="text-center">{{ column | title | replace('_', ' ') }}</th>
                             {% endfor %}
-                                <th class="text-center">Cantidad</th>
-                                <th class="text-center">Costo</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-center">Costo</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for column in columns %}
-                        <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
-                            {% for i in column %}
-                                {% if i == 0 %}
-                                    <td>0</td>  
-                                {% elif not i %}
-                                    <td></td>
-                                {% elif not loop.index == 1 %}
-                                    {% if i == column[-1] %}
-                                        <td>{{ format(i) }}</td>
-                                    {% elif i == column[-2] %}
-                                        <td>{{ format_quantity(i) }}</td>
-                                    {% else %}
-                                        <td>{{ i }}</td>
+                            <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
+                                {% for i in column %}
+                                    {% if i == 0 %}
+                                        <td>0</td>
+                                        {% elif not i %}
+                                        <td></td>
+                                        {% elif not loop.index == 1 %}
+                                        {% if i == column[-1] %}
+                                            <td>{{ format(i) }}</td>
+                                            {% elif i == column[-2] %}
+                                            <td>{{ format_quantity(i) }}</td>
+                                        {% else %}
+                                            <td>{{ i }}</td>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            {% endfor %}
-
-                        </tr>
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-        </div>
-    {% else %}
-        <div class="container jumbotron text-center">
-            <h1 class="text-center">No se encontraron articulos <i class="fa fa-exclamation-triangle"></i></h1>
-        </div>
-    {% endfor %}
-<script>
-
-    //borramos articulo
-    jQuery(document).ready(function() {
+            </div>
+        {% else %}
+            <div class="container jumbotron text-center">
+                <h1 class="text-center">No se encontraron articulos <i class="fa fa-exclamation-triangle"></i></h1>
+            </div>
+        {% endfor %}
+        <script>
+        //borramos articulo
+        jQuery(document).ready(function() {
         jQuery(".delete-article").click(function(event) {
-            var parent = jQuery(this).parent().parent().parent();
-            var id = parent.attr("id_article");
-            var section = parent.attr("section");
-            //datos apra enviar por ajax
-            var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
-            
-            bootbox.confirm({
-                message: "¿Seguro quieres eliminar el articulo?",
-                buttons: {
-                    confirm: {
-                        label: 'Si',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: 'No',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result){
-                    if(result){
-                        jQuery.ajax({
-                            url: '{{ url("article:delete") }}',
-                            type: 'POST',
-                            data: data,
-                            success: function (data, textStatus, jqXHR){
-                                bootbox.alert({
-                                    message: data.message,
-                                    callback: function (){
-                                        window.location = "/"
-                                    }
-                                });
-                            },
-                            error: function (data, textStatus, jqXHR){
-                                bootbox.alert({
-                                    message: data.message,
-                                    callback: function (){
-                                        window.location.reload()
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                }
-            });    
+        var parent = jQuery(this).parent().parent().parent();
+        var id = parent.attr("id_article");
+        var section = parent.attr("section");
+        //datos apra enviar por ajax
+        var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
+        
+        bootbox.confirm({
+        message: "¿Seguro quieres eliminar el articulo?",
+        buttons: {
+        confirm: {
+        label: 'Si',
+        className: 'btn-success'
+        },
+        cancel: {
+        label: 'No',
+        className: 'btn-danger'
+        }
+        },
+        callback: function (result){
+        if(result){
+        jQuery.ajax({
+        url: '{{ url("article:delete") }}',
+        type: 'POST',
+        data: data,
+        success: function (data, textStatus, jqXHR){
+        bootbox.alert({
+        message: data.message,
+        callback: function (){
+        window.location = "/"
+        }
         });
-    });
-
-    //compra de articulos
-    jQuery('.btn-sale').click(function(){
+        },
+        error: function (data, textStatus, jqXHR){
+        bootbox.alert({
+        message: data.message,
+        callback: function (){
+        window.location.reload()
+        }
+        });
+        }
+        });
+        }
+        }
+        });
+        });
+        });
+        //compra de articulos
+        jQuery('.btn-sale').click(function(){
         var parent = jQuery(this).parent().parent().parent();
         var id = parseInt(parent.attr("id_article"));
         var article_name = parent.attr("article");
@@ -118,71 +113,62 @@
         var section = parent.attr("section");
         // cantidad maxima de articulos
         var max = parseInt(parent.attr("max"));
-
         bootbox.prompt({
-            title: "<h3>Especifique la cantidad de " + article_name + " <i class='fa fa-cart-plus'></i></h3>",
-            size: 'small',
-            inputType: 'number',
-            buttons:{
-                cancel:{
-                    label: '<i class="fa fa-times"></i>'
-                },
-                confirm: {
-                    label: '<i class="fa fa-cart-plus"></i>'
-                 }
-            },
-            callback: function(quantity){
-                quantity = parseInt(quantity);
-                if(quantity){
-                    //articulos ordenado con us id
-                    if(quantity <= max){
-                        //creamos la session para los productos y secciones
-                        if(!sessionStorage.articles){
-                            var articles = {"articles": []};
-                            //tranformamos a string para luego pode r manipular
-                            sessionStorage.articles = JSON.stringify(articles);
-                        }
-
-                        var article = [id, article_name, quantity, (quantity * costo), section];
-                        //convertimos a objeto para agregar
-                        var articles = JSON.parse(sessionStorage.articles);
-
-                        //verificamos si el articulo existe en el array
-                        exist = false;
-                        for(i = 0; i < articles.articles.length; i++){
-                            if(id == articles.articles[i][0]){
-                                exist = true;
-                            }
-                        }
-
-                        if(!exist){
-                            articles.articles.push(article);
-                            sessionStorage.articles = JSON.stringify(articles);
-
-                            bootbox.alert("Articulo agregado al carrito! <i class='fa fa-smile-o'></i>",
-                                function(){
-                                    window.location.reload();
-                                });
-
-                        }else{
-                            bootbox.alert("Error este producto ya esta en el carrito! <i class='fa fa-exclamation-triangle'></i>");
-                        }
-
-                    }else{
-                        bootbox.alert("Error cantidad fuera de rango! <i class='fa fa-exclamation-triangle'></i>");
-                    } 
-                }
-            }
+        title: "<h3>Especifique la cantidad de " + article_name + " <i class='fa fa-cart-plus'></i></h3>",
+        size: 'small',
+        inputType: 'number',
+        buttons:{
+        cancel:{
+        label: '<i class="fa fa-times"></i>'
+        },
+        confirm: {
+        label: '<i class="fa fa-cart-plus"></i>'
+        }
+        },
+        callback: function(quantity){
+        quantity = parseInt(quantity);
+        if(quantity){
+        //articulos ordenado con us id
+        if(quantity <= max){
+        //creamos la session para los productos y secciones
+        if(!sessionStorage.articles){
+        var articles = {"articles": []};
+        //tranformamos a string para luego pode r manipular
+        sessionStorage.articles = JSON.stringify(articles);
+        }
+        var article = [id, article_name, quantity, (quantity * costo), section];
+        //convertimos a objeto para agregar
+        var articles = JSON.parse(sessionStorage.articles);
+        //verificamos si el articulo existe en el array
+        exist = false;
+        for(i = 0; i < articles.articles.length; i++){
+        if(id == articles.articles[i][0]){
+        exist = true;
+        }
+        }
+        if(!exist){
+        articles.articles.push(article);
+        sessionStorage.articles = JSON.stringify(articles);
+        bootbox.alert("Articulo agregado al carrito! <i class='fa fa-smile-o'></i>",
+        function(){
+        window.location.reload();
         });
-
+        }else{
+        bootbox.alert("Error este producto ya esta en el carrito! <i class='fa fa-exclamation-triangle'></i>");
+        }
+        }else{
+        bootbox.alert("Error cantidad fuera de rango! <i class='fa fa-exclamation-triangle'></i>");
+        }
+        }
+        }
+        });
         jQuery('.bootbox-input').attr({
-            min: '1',
-            max: max
+        min: '1',
+        max: max
         });
-    });
-
-</script>    
-<br />
-<br />
-<br />
-{% endblock %}
+        });
+        </script>
+        <br />
+        <br />
+        <br />
+    {% endblock %}
