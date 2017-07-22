@@ -140,10 +140,13 @@ def get_total_money_articles():
 
     for x in sections:
         # sql para la consulta
-        sql = "SELECT SUM(precio) FROM %s" % x.name
+        sql = "SELECT SUM(precio*cantidad) FROM %s" % x.name
         cursor.execute(sql)
         result = cursor.fetchone()
-        total += result[0]
+        
+        # verificamos si existen articulos para sumar
+        if result[0]:
+            total += result[0]
 
     return total
 
@@ -164,6 +167,8 @@ def get_total_articles():
         sql = "SELECT SUM(cantidad) FROM %s" % x.name
         cursor.execute(sql)
         result = cursor.fetchone()
-        total += result[0]
+        
+        if result[0]:
+            total += result[0]
 
     return total
