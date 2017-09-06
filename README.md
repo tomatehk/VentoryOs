@@ -1,4 +1,4 @@
-# Ventary Os
+# Ventory Os
 Sistema de inventario Open Source
 
 # Requisitos
@@ -13,6 +13,7 @@ Modulos necesarios para el entorno virtual de python:
 + Django 1.11
 + psycopg2
 + jinja2
++ pyyaml
 
 
 
