@@ -1,126 +1,126 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    <div class="container">
-        {% for section, columns in sections.items() %}
-            <h1 class="text-center">Artículos <i class="fa fa-th-large"></i></h1>
-            <br />
-            <table class="table table-bordered text-center">
-                <thead>
-                    <tr class="blue-color font-white">
-                        <th colspan="{{ sections_columns[section] | length + 3}}"><h2 class="text-center">{{ section | title | replace('_', ' ') }} <span class="glyphicon glyphicon-list-alt"></span></h2></th>
-                    </tr>
-                    <tr class="orange-color">
-                        {% for column in sections_columns[section] %}
-                            <th class="text-center">{{ column | title | replace('_', ' ') }}</th>
-                        {% endfor %}
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Precio</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for column in columns %}
-                        <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
-                            {% for i in column %}
-                                {% if i == 0 %}
-                                    <td>0</td>
-                                    {% elif not i %}
-                                    <td></td>
-                                    {% elif not loop.index == 1 %}
-                                    {% if i == column[-1] %}
-                                        <td>{{ format(i) }}</td>
-                                        {% elif i == column[-2] %}
-                                        <td>{{ format_quantity(i) }}</td>
-                                    {% else %}
-                                        <td>{{ i }}</td>
-                                    {% endif %}
-                                {% endif %}
-                                {% if loop.last %}
-                                    <td>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-warning btn-sale" id="save" data-toggle="tooltip" data-placement="top" title="Agregar al carrito"><span class="glyphicon glyphicon-shopping-cart"></span></button>
-                                            {% if not request.user.username == 'work'%}
-                                                <button type="button" class="btn btn-success edit-article" data-toggle="tooltip" data-placement="top" title="Editar producto"><span class="glyphicon glyphicon-pencil"></span></button>
-                                                <button type="button" class="btn btn-danger delete-article" data-toggle="tooltip" data-placement="top" title="Eliminar producto"><span class="glyphicon glyphicon-remove"></span></button>
-                                            {% endif %}
-                                        </div>
-                                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                                    </td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="container jumbotron text-center">
-            <h1 class="text-center">No se encontraron artículos <i class="fa fa-exclamation-triangle"></i></h1>
-        </div>
-    {% endfor %}
-    <script>
-    //borramos articulo
-    jQuery(document).ready(function() {
+<div class="container">
+  {% for section, columns in sections.items() %}
+  <h1 class="text-center">Artículos <i class="fa fa-th-large"></i></h1>
+  <br />
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr class="blue-color font-white">
+        <th colspan="{{ sections_columns[section] | length + 3}}"><h2 class="text-center">{{ section | title | replace('_', ' ') }} <span class="glyphicon glyphicon-list-alt"></span></h2></th>
+      </tr>
+      <tr class="orange-color">
+        {% for column in sections_columns[section] %}
+        <th class="text-center">{{ column | title | replace('_', ' ') }}</th>
+        {% endfor %}
+        <th class="text-center">Cantidad</th>
+        <th class="text-center">Precio</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for column in columns %}
+      <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
+        {% for i in column %}
+        {% if i == 0 %}
+        <td>0</td>
+        {% elif not i %}
+        <td></td>
+        {% elif not loop.index == 1 %}
+        {% if i == column[-1] %}
+        <td>{{ format(i) }}</td>
+        {% elif i == column[-2] %}
+        <td>{{ format_quantity(i) }}</td>
+        {% else %}
+        <td>{{ i }}</td>
+        {% endif %}
+        {% endif %}
+        {% if loop.last %}
+        <td>
+          <div class="btn-group">
+            <button type="button" class="btn btn-warning btn-sale" id="save" data-toggle="tooltip" data-placement="top" title="Agregar al carrito"><span class="glyphicon glyphicon-shopping-cart"></span></button>
+            {% if not request.user.username == 'work'%}
+            <button type="button" class="btn btn-success edit-article" data-toggle="tooltip" data-placement="top" title="Editar producto"><span class="glyphicon glyphicon-pencil"></span></button>
+            <button type="button" class="btn btn-danger delete-article" data-toggle="tooltip" data-placement="top" title="Eliminar producto"><span class="glyphicon glyphicon-remove"></span></button>
+            {% endif %}
+          </div>
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="container jumbotron text-center">
+  <h1 class="text-center">No se encontraron artículos <i class="fa fa-exclamation-triangle"></i></h1>
+</div>
+{% endfor %}
+<script>
+  //borramos articulo
+  jQuery(document).ready(function() {
     jQuery(".delete-article").click(function(event) {
-    var parent = jQuery(this).parent().parent().parent();
-    var id = parent.attr("id_article");
-    var section = parent.attr("section");
-    //datos apra enviar por ajax
-    var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
-    
-    bootbox.confirm({
-    message: "¿Seguro quieres eliminar el artículo?",
-    buttons: {
-    confirm: {
-    label: 'Si',
-    className: 'btn-success'
-    },
-    cancel: {
-    label: 'No',
-    className: 'btn-danger'
-    }
-    },
-    callback: function (result){
-    if(result){
-    jQuery.ajax({
-    url: '{{ url("article:delete") }}',
-    type: 'POST',
-    data: data,
-    success: function (data, textStatus, jqXHR){
-    bootbox.alert({
-    message: data.message + " <i class='fa fa-smile-o'></i>",
-    callback: function (){
-    window.location.reload();
-    }
+      var parent = jQuery(this).parent().parent().parent();
+      var id = parent.attr("id_article");
+      var section = parent.attr("section");
+      //datos apra enviar por ajax
+      var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
+      
+      bootbox.confirm({
+        message: "¿Seguro quieres eliminar el artículo?",
+        buttons: {
+          confirm: {
+            label: 'Si',
+            className: 'btn-success'
+          },
+          cancel: {
+            label: 'No',
+            className: 'btn-danger'
+          }
+        },
+        callback: function (result){
+          if(result){
+            jQuery.ajax({
+              url: '{{ url("article:delete") }}',
+              type: 'POST',
+              data: data,
+              success: function (data, textStatus, jqXHR){
+                bootbox.alert({
+                  message: data.message + " <i class='fa fa-smile-o'></i>",
+                  callback: function (){
+                    window.location.reload();
+                  }
+                });
+              },
+              error: function (data, textStatus, jqXHR){
+                bootbox.alert({
+                  message: data.message,
+                  callback: function (){
+                    window.location.reload();
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
     });
-    },
-    error: function (data, textStatus, jqXHR){
-    bootbox.alert({
-    message: data.message,
-    callback: function (){
-    window.location.reload();
-    }
-    });
-    }
-    });
-    }
-    }
-    });
-    });
-    });
-    //editar articulo
-    jQuery(document).ready(function() {
+  });
+  //editar articulo
+  jQuery(document).ready(function() {
     jQuery(".edit-article").click(function(event){
-    var parent = jQuery(this).parent().parent().parent();
-    var id = parent.attr("id_article");
-    var section = parent.attr("section");
-    jQuery("#edit-article-id").val(id);
-    jQuery("#edit-article-section").val(section);
-    jQuery("#edit-article-form").submit();
+      var parent = jQuery(this).parent().parent().parent();
+      var id = parent.attr("id_article");
+      var section = parent.attr("section");
+      jQuery("#edit-article-id").val(id);
+      jQuery("#edit-article-section").val(section);
+      jQuery("#edit-article-form").submit();
     });
-    });
-    //compra de articulos
-    jQuery('.btn-sale').click(function(){
+  });
+  //compra de articulos
+  jQuery('.btn-sale').click(function(){
     var parent = jQuery(this).parent().parent().parent();
     var id = parseInt(parent.attr("id_article"));
     var article_name = parent.attr("article");
@@ -129,71 +129,71 @@
     // cantidad maxima de articulos
     var max = parseInt(parent.attr("max"));
     bootbox.prompt({
-    title: "<h3>Especifique la cantidad de " + article_name + " <i class='fa fa-cart-plus'></i></h3>",
-    size: 'small',
-    inputType: 'number',
-    buttons:{
-    cancel:{
-    label: '<i class="fa fa-times"></i> Cancelar'
-    },
-    confirm: {
-    label: '<i class="fa fa-cart-plus"></i> Agregar'
-    }
-    },
-    callback: function(quantity){
-    quantity = parseInt(quantity);
-    if(quantity){
-    //articulos ordenado con us id
-    if(quantity <= max){
-    //creamos la session para los productos y secciones
-    if(!sessionStorage.articles){
-    var articles = {"articles": []};
-    //tranformamos a string para luego pode r manipular
-    sessionStorage.articles = JSON.stringify(articles);
-    }
-    var article = [id, article_name, quantity, (quantity * costo), section];
-    //convertimos a objeto para agregar
-    var articles = JSON.parse(sessionStorage.articles);
-    //verificamos si el articulo existe en el array
-    exist = false;
-    for(i = 0; i < articles.articles.length; i++){
-    if(id == articles.articles[i][0] && section == articles.articles[i][4]){
-    exist = true;
-    }
-    }
-    if(!exist){
-    articles.articles.push(article);
-    sessionStorage.articles = JSON.stringify(articles);
-    bootbox.alert("Artículo agregado al carrito! <i class='fa fa-smile-o'></i>",
-    function(){
-    window.location.reload();
-    });
-    }else{
-    bootbox.alert("Error este producto ya esta en el carrito! <i class='fa fa-exclamation-triangle'></i>");
-    }
-    }else{
-    bootbox.alert({
-    message: "Error cantidad fuera de rango! <i class='fa fa-exclamation-triangle'></i>",
-    size: 'small'
-    });
-    }
-    }
-    }
+      title: "<h3>Especifique la cantidad de " + article_name + " <i class='fa fa-cart-plus'></i></h3>",
+      size: 'small',
+      inputType: 'number',
+      buttons:{
+        cancel:{
+          label: '<i class="fa fa-times"></i> Cancelar'
+        },
+        confirm: {
+          label: '<i class="fa fa-cart-plus"></i> Agregar'
+        }
+      },
+      callback: function(quantity){
+        quantity = parseInt(quantity);
+        if(quantity){
+          //articulos ordenado con us id
+          if(quantity <= max){
+            //creamos la session para los productos y secciones
+            if(!sessionStorage.articles){
+              var articles = {"articles": []};
+              //tranformamos a string para luego pode r manipular
+              sessionStorage.articles = JSON.stringify(articles);
+            }
+            var article = [id, article_name, quantity, (quantity * costo), section];
+            //convertimos a objeto para agregar
+            var articles = JSON.parse(sessionStorage.articles);
+            //verificamos si el articulo existe en el array
+            exist = false;
+            for(i = 0; i < articles.articles.length; i++){
+              if(id == articles.articles[i][0] && section == articles.articles[i][4]){
+                exist = true;
+              }
+            }
+            if(!exist){
+              articles.articles.push(article);
+              sessionStorage.articles = JSON.stringify(articles);
+              bootbox.alert("Artículo agregado al carrito! <i class='fa fa-smile-o'></i>",
+              function(){
+                window.location.reload();
+              });
+            }else{
+              bootbox.alert("Error este producto ya esta en el carrito! <i class='fa fa-exclamation-triangle'></i>");
+            }
+          }else{
+            bootbox.alert({
+              message: "Error cantidad fuera de rango! <i class='fa fa-exclamation-triangle'></i>",
+              size: 'small'
+            });
+          }
+        }
+      }
     });
     jQuery('.bootbox-input').attr({
-    min: '1',
-    max: max
+      min: '1',
+      max: max
     });
-    });
-    </script>
-    <!-- formulario para edita articulo -->
-    <form action="{{ url('article:edit') }}" id="edit-article-form" method="POST">
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <input type="hidden" name="edit-article-id" id="edit-article-id">
-        <input type="hidden" name="edit-article-section" id="edit-article-section">
-    </form>
-    <!-- fin formulario -->
-    <br />
-    <br />
-    <br />
+  });
+</script>
+<!-- formulario para edita articulo -->
+<form action="{{ url('article:edit') }}" id="edit-article-form" method="POST">
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <input type="hidden" name="edit-article-id" id="edit-article-id">
+  <input type="hidden" name="edit-article-section" id="edit-article-section">
+</form>
+<!-- fin formulario -->
+<br />
+<br />
+<br />
 {% endblock %}

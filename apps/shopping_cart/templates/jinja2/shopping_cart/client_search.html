@@ -1,74 +1,74 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    <div class="container">
-        {% if not client %}
-            <br />
-            <div class="container text-center">
-                <form class="form-inline" role="form" method="POST">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" id="ejemplo_email_2" placeholder="C.I: Ejemplo 12345" name="c-i">
-                    </div>
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                    <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Buscar"><span class="glyphicon glyphicon-search"></span></button>
-                    <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Ver registro"><i class="fa fa-list-alt"></i></a>
-                </form>
-            </div>
-            <div class="container jumbotron text-center bg2">
-                <h1 class="text-center">Cliente no encontrado <span class="glyphicon glyphicon-search"></span></h1>
-            </div>
-            <br />
-        {% else %}
-            <h1 class="text-center">Registro de ventas <i class="fa fa-list-alt"></i></h1>
-            <br />
-            <div class="container text-center">
-                <form class="form-inline" role="form" method="POST">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="number" class="form-control" placeholder="C.I: Ejemplo 12345" name="c-i" min="1" required autocomplete="off">
-                    </div>
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                    <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Buscar"><span class="glyphicon glyphicon-search"></span></button>
-                    <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Ver registro"><i class="fa fa-list-alt"></i></a>
-                </form>
-            </div>
-            <br />
-            <table class="table table-bordered text-center">
-                <thead>
-                    <tr class="orange-color">
-                        <th class="text-center" colspan="5"><i class="fa fa-user"> <b>{{ client.name }}</b> | <b>C.I:</b> {{ client.id }}</i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="blue-color font-white">
-                        <td class="text-center">Artículo <i class="fa fa-th-large"></i></td>
-                        <td class="text-center">Cantidad <i class="fa fa-hashtag"></i></td>
-                        <td class="text-center">Precio <i class="fa fa-dollar"></i></td>
-                        <th class="text-center">Fecha <i class="fa fa-calendar"></i></th>
-                        {% if not request.user.username == 'work'%}
-                            <th class="text-center">Accion <i class="fa fa-calendar"></i></th>
-                        {% endif %}
-                    </tr>
-                    <!-- Mostramos todos los articulos -->
-                    {% for x in sales %}
-                        <tr>
-                            <td class="text-center">{{ x.article }}</td>
-                            <td class="text-center">{{ x.quantity }}</td>
-                            <td class="text-center">{{ format(x.price) }}</td>
-                            <td class="text-center">{{ x.pub_date | datetimeformat }}</td>
-                            {% if not request.user.username == 'work'%}
-                                <td><a href="{{ url('shopping_cart:sale_delete', args=[x.id]) }}" type="button" class="btn btn-danger delete-article"><span class="glyphicon glyphicon-remove"></span></a></td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    <tr class="blue-color font-white">
-                        <td colspan="5"><b>Total ventas: Bs {{ total }}.</b></td>
-                    </tr>
-                </tbody>
-            </table>
+<div class="container">
+  {% if not client %}
+  <br />
+  <div class="container text-center">
+    <form class="form-inline" role="form" method="POST">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="text" class="form-control" id="ejemplo_email_2" placeholder="C.I: Ejemplo 12345" name="c-i">
+      </div>
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Buscar"><span class="glyphicon glyphicon-search"></span></button>
+      <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Ver registro"><i class="fa fa-list-alt"></i></a>
+    </form>
+  </div>
+  <div class="container jumbotron text-center bg2">
+    <h1 class="text-center">Cliente no encontrado <span class="glyphicon glyphicon-search"></span></h1>
+  </div>
+  <br />
+  {% else %}
+  <h1 class="text-center">Registro de ventas <i class="fa fa-list-alt"></i></h1>
+  <br />
+  <div class="container text-center">
+    <form class="form-inline" role="form" method="POST">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="number" class="form-control" placeholder="C.I: Ejemplo 12345" name="c-i" min="1" required autocomplete="off">
+      </div>
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Buscar"><span class="glyphicon glyphicon-search"></span></button>
+      <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Ver registro"><i class="fa fa-list-alt"></i></a>
+    </form>
+  </div>
+  <br />
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr class="orange-color">
+        <th class="text-center" colspan="5"><i class="fa fa-user"> <b>{{ client.name }}</b> | <b>C.I:</b> {{ client.id }}</i></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="blue-color font-white">
+        <td class="text-center">Artículo <i class="fa fa-th-large"></i></td>
+        <td class="text-center">Cantidad <i class="fa fa-hashtag"></i></td>
+        <td class="text-center">Precio <i class="fa fa-dollar"></i></td>
+        <th class="text-center">Fecha <i class="fa fa-calendar"></i></th>
+        {% if not request.user.username == 'work'%}
+        <th class="text-center">Accion <i class="fa fa-calendar"></i></th>
         {% endif %}
-    </div>
-    <br />
-    <br />
-    <br />
+      </tr>
+      <!-- Mostramos todos los articulos -->
+      {% for x in sales %}
+      <tr>
+        <td class="text-center">{{ x.article }}</td>
+        <td class="text-center">{{ x.quantity }}</td>
+        <td class="text-center">{{ format(x.price) }}</td>
+        <td class="text-center">{{ x.pub_date | datetimeformat }}</td>
+        {% if not request.user.username == 'work'%}
+        <td><a href="{{ url('shopping_cart:sale_delete', args=[x.id]) }}" type="button" class="btn btn-danger delete-article"><span class="glyphicon glyphicon-remove"></span></a></td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      <tr class="blue-color font-white">
+        <td colspan="5"><b>Total ventas: Bs {{ total }}.</b></td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+<br />
+<br />
+<br />
 {% endblock %}

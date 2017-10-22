@@ -1,313 +1,313 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    <div class="container-fluid bg-1 text-center">
-        <h3 class="margin">{{ section.name | replace('_', ' ') | title }}
-        <a href="#" id="delete_section" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
-        </h3>
-        <!-- Creamos el tag form para agregar campos a la seccion y evitar conflictos y usar DRY-->
-        <div class="btn-group">
-            <a href="#" id="add" class="btn btn-primary">Agregar campos <span class="glyphicon glyphicon-plus"></span></a>
-            <button type="button" id="min" class="btn btn-warning" form="form_field" data-toggle="collapse" data-target="#min-collapse">Minimo de artículos <i class="fa fa-th-large"></i></button>
-            <button type="submit" id="send" class="btn btn-success disabled" form="form_field" disabled="disabled">Guardar campos <span class="glyphicon glyphicon-ok"></span></button>
-        </div>
-        <!-- formulario para agregar campos -->
-        <div class="text-center">
-            <form id="form_field" action="" method="POST" class="form-inline">
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                <input type="hidden" id ="values" name="values" value="">
-            </form>
-        </div>
-        <br />
-        <!-- Collapse informacion, si tiene el modo minimo-->
-        <div id="min-collapse" class="collapse">
-            <form action="{{ url('section:update', args=[section.id]) }}" class="form-inline" method="POST">
-                <div class="checkbox">
-                    <label><input type="checkbox" name="minimum_mode" id="minimum_mode" {% if section.minimum_mode %}checked{% endif %}> Activar</label>
-                </div>
-                <div class="form-group">
-                    <label for="pwd"></label>
-                    <input type="number" class="form-control" name="min-number" id="min-number" {% if section.minimum_mode %} value="{{ section.minimum }}" {% endif %}>
-                </div>
-                <input type="hidden" name="type" value="minimum">
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-default">Guardar</button>
-                <script>
-                jQuery(document).ready(function(){
-                var checked_ready = jQuery("#minimum_mode").is(':checked');
-                if(checked_ready){
-                jQuery("#min-number").attr('disabled', false);
-                }else{
-                jQuery("#min-number").attr('disabled', true);
-                }
-                jQuery("#minimum_mode").change(function(event) {
-                var checked = jQuery(this).is(':checked');
-                if(!checked){
-                jQuery("#min-number").attr('disabled', true);
-                }else{
-                jQuery("#min-number").attr('disabled', false);
-                }
-                });
-                });
-                </script>
-            </form>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <table class="table">
-                    <thead>
-                        <tr class="orange-color">
-                            <th class="text-center">Nombre</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if details|length == 2 %}
-                            <tr>
-                                <td colspan="2"><h3>Opps! no has creado campos en esta seccion, solo se encuentran los campos por defecto <i class="fa fa-frown-o"></i></h3></td>
-                            </tr>
-                        {% endif %}
-                        {% for detail in details %}
-                            {% if detail != 'id' %}
-                                {% if detail != 'cantidad' and detail != 'precio' %}
-                                    <tr>
-                                        <td>{{ detail | title | replace('_', ' ') }}</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="#" class="btn btn-danger delete_column" column="{{ detail | title}}"><span class="glyphicon glyphicon-remove"></span></a>
-                                                <a href="#" class="btn btn-warning edit_column" column="{{ detail | title }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% elif detail == 'cantidad' %}
-                                    <tr class="blue-color font-white">
-                                        <td>{{ detail | title }}</td>
-                                        <td>Cantidad/Artículos</td>
-                                    </tr>
-                                    {% elif detail == 'precio' %}
-                                    <tr style="color:white;background: rgb(40,96,144)">
-                                        <td>{{ detail | title }}</td>
-                                        <td>Precio/Artículos</td>
-                                    </tr>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-    </div>
+<div class="container-fluid bg-1 text-center">
+	<h3 class="margin">{{ section.name | replace('_', ' ') | title }}
+		<a href="#" id="delete_section" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+	</h3>
+	<!-- Creamos el tag form para agregar campos a la seccion y evitar conflictos y usar DRY-->
+	<div class="btn-group">
+		<a href="#" id="add" class="btn btn-primary">Agregar campos <span class="glyphicon glyphicon-plus"></span></a>
+		<button type="button" id="min" class="btn btn-warning" form="form_field" data-toggle="collapse" data-target="#min-collapse">Minimo de artículos <i class="fa fa-th-large"></i></button>
+		<button type="submit" id="send" class="btn btn-success disabled" form="form_field" disabled="disabled">Guardar campos <span class="glyphicon glyphicon-ok"></span></button>
+	</div>
+	<!-- formulario para agregar campos -->
+	<div class="text-center">
+		<form id="form_field" action="" method="POST" class="form-inline">
+			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+			<input type="hidden" id ="values" name="values" value="">
+		</form>
+	</div>
+	<br />
+	<!-- Collapse informacion, si tiene el modo minimo-->
+	<div id="min-collapse" class="collapse">
+		<form action="{{ url('section:update', args=[section.id]) }}" class="form-inline" method="POST">
+			<div class="checkbox">
+				<label><input type="checkbox" name="minimum_mode" id="minimum_mode" {% if section.minimum_mode %}checked{% endif %}> Activar</label>
+			</div>
+			<div class="form-group">
+				<label for="pwd"></label>
+				<input type="number" class="form-control" name="min-number" id="min-number" {% if section.minimum_mode %} value="{{ section.minimum }}" {% endif %}>
+			</div>
+			<input type="hidden" name="type" value="minimum">
+			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+			<button type="submit" class="btn btn-default">Guardar</button>
+			<script>
+				jQuery(document).ready(function(){
+					var checked_ready = jQuery("#minimum_mode").is(':checked');
+					if(checked_ready){
+						jQuery("#min-number").attr('disabled', false);
+					}else{
+						jQuery("#min-number").attr('disabled', true);
+					}
+					jQuery("#minimum_mode").change(function(event) {
+						var checked = jQuery(this).is(':checked');
+						if(!checked){
+							jQuery("#min-number").attr('disabled', true);
+						}else{
+							jQuery("#min-number").attr('disabled', false);
+						}
+					});
+				});
+			</script>
+		</form>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<table class="table">
+				<thead>
+					<tr class="orange-color">
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if details|length == 2 %}
+					<tr>
+						<td colspan="2"><h3>Opps! no has creado campos en esta seccion, solo se encuentran los campos por defecto <i class="fa fa-frown-o"></i></h3></td>
+					</tr>
+					{% endif %}
+					{% for detail in details %}
+					{% if detail != 'id' %}
+					{% if detail != 'cantidad' and detail != 'precio' %}
+					<tr>
+						<td>{{ detail | title | replace('_', ' ') }}</td>
+						<td>
+							<div class="btn-group">
+								<a href="#" class="btn btn-danger delete_column" column="{{ detail | title}}"><span class="glyphicon glyphicon-remove"></span></a>
+								<a href="#" class="btn btn-warning edit_column" column="{{ detail | title }}"><span class="glyphicon glyphicon-pencil"></span></a>
+							</div>
+						</td>
+					</tr>
+					{% elif detail == 'cantidad' %}
+					<tr class="blue-color font-white">
+						<td>{{ detail | title }}</td>
+						<td>Cantidad/Artículos</td>
+					</tr>
+					{% elif detail == 'precio' %}
+					<tr style="color:white;background: rgb(40,96,144)">
+						<td>{{ detail | title }}</td>
+						<td>Precio/Artículos</td>
+					</tr>
+					{% endif %}
+					{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-2">
+		</div>
+	</div>
+</div>
 </div>
 <script>
-jQuery(document).ready(function($) {
-var num = 1;
-jQuery('#add').click(function(event) {
-jQuery('#send').attr('class', 'btn btn-success');
-jQuery('#send').removeAttr('disabled');
-var input = "<br class='br'/>\
-<div class='form-group add_input'>\
-    <label for='name_field'>Nombre:</label>\
-    <input type='text' id='name_field' class='form-control input-add' name='name_field"+ num +"' autocomplete='off' required/>\
-    <button type='button' class='btn btn-danger remove-field-add'><span class='glyphicon glyphicon-remove'></span></button>\
-</div>\
-<br class='br'/>"
-jQuery(input).appendTo('#form_field');
-jQuery('.remove-field-add').click(function(){
-jQuery(this).parent().prev().remove();
-jQuery(this).parent().next().remove();
-jQuery(this).parent().remove();
-});
-num++;
-//con esto espacamos plos espacios por '_'
-jQuery('.input-add').keydown(function(e) {
-if(e.which == 32){
-jQuery(this).val(jQuery(this).val() + '_')
-return false;
-}
-});
-});
-jQuery("#form_field").submit(function(){
-jQuery("#form_field").append('<input type="hidden" name="type" value="add">');
-values = jQuery("#form_field").serialize();
-jQuery('#values').attr('value', values);
-jQuery.ajax({
-url: "{{ url('section:update', args=[section.id]) }}",
-data: jQuery("#form_field").serialize(),
-type: 'POST',
-success: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: data.message + " <i class='fa fa-hand-o-right'></i>",
-callback: function (){
-window.location.reload();
-}
-});
-},
-error: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
-callback: function (){
-window.location.reload();
-}
-});
-}
-});
-return false;
-});
-});
-jQuery('.delete_column').click(function(event){
-jQuery(document).ready(function($) {
-jQuery('.add_input').remove();
-jQuery('.br').remove();
-});
-jQuery("#form_field").append('<input type="hidden" name="type" value="delete">');
-var column = jQuery(this).attr('column').toLowerCase();
-jQuery("#values").attr('value', column.toLowerCase());
-bootbox.confirm({
-message: "¿Seguro quieres eliminar este campo? <i class='fa fa-smile-o'><i/>",
-buttons: {
-confirm: {
-label: 'Si',
-className: 'btn-success'
-},
-cancel: {
-label: 'No',
-className: 'btn-danger'
-}
-},
-callback: function (result) {
-if(result){
-jQuery.ajax({
-url: "{{ url('section:update', args=[section.id]) }}",
-type: 'POST',
-data: jQuery("#form_field").serialize(),
-success: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: data.message + " <i class='fa fa-hand-o-right'></i>",
-callback: function (){
-window.location.reload();
-}
-});
-},
-error: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
-callback: function (){
-window.location.reload();
-}
-});
-}
-});
-}
-}
-});
-return false;
-});
-jQuery(".edit_column").click(function(event){
-jQuery(document).ready(function($) {
-jQuery('.add_input').remove();
-jQuery('.br').remove();
-});
-jQuery("#form_field").append('<input type="hidden" name="type" value="edit">');
-var column = jQuery(this).attr('column');
-var new_column
-bootbox.confirm({
-message: "¿Seguro quieres editar este campo? <i class='fa fa-smile-o'><i/>",
-buttons: {
-confirm: {
-label: 'Si',
-className: 'btn-success'
-},
-cancel: {
-label: 'No',
-className: 'btn-danger'
-}
-},
-callback: function (result) {
-if(result){
-bootbox.prompt("Renombrar campo: " + column.replace("_", " "),
-function(new_column){
-                    //comprobamos si new_column es null para devolver true
-                    // para evitar un error
-                    if(!new_column){
-                    return true;
-                                        }
-jQuery("#form_field").append('<input type="hidden" name="new_name" value="'+new_column+'">');
-jQuery("#values").attr('value', column.toLowerCase());
-jQuery.ajax({
-url: "{{ url('section:update', args=[section.id]) }}",
-type: 'POST',
-data: jQuery("#form_field").serialize(),
-success: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: data.message + " <i class='fa fa-hand-o-right'></i>",
-callback: function (){
-window.location.reload();
-}
-});
-},
-error: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
-callback: function (){
-window.location.reload();
-}
-});
-}
-});
-});
-}
-}
-});
-return false;
-});
-jQuery('#delete_section').click(function(event){
-jQuery("#form_field").append('<input type="hidden" name="type" value="delete-section">');
-bootbox.confirm({
-message: "¿Seguro quieres eliminar esta seccion? <i class='fa fa-smile-o'><i/>",
-buttons: {
-confirm: {
-label: 'Si',
-className: 'btn-success'
-},
-cancel: {
-label: 'No',
-className: 'btn-danger'
-}
-},
-callback: function (result) {
-if(result){
-jQuery.ajax({
-url: "{{ url('section:update', args=[section.id]) }}",
-type: 'POST',
-data: jQuery("#form_field").serialize(),
-success: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: data.message + " <i class='fa fa-hand-o-right'></i>",
-callback: function (){
-window.location = {{ url('section:sections') }}
-}
-});
-},
-error: function (data, textStatus, jqXHR){
-bootbox.alert({
-message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
-callback: function (){
-window.location.reload();
-}
-});
-}
-});
-}
-}
-});
-return false;
-});
-</script>
-<br />
-<br />
-<br />
-{% endblock %}
+	jQuery(document).ready(function($) {
+		var num = 1;
+		jQuery('#add').click(function(event) {
+			jQuery('#send').attr('class', 'btn btn-success');
+			jQuery('#send').removeAttr('disabled');
+			var input = "<br class='br'/>\
+			<div class='form-group add_input'>\
+				<label for='name_field'>Nombre:</label>\
+				<input type='text' id='name_field' class='form-control input-add' name='name_field"+ num +"' autocomplete='off' required/>\
+				<button type='button' class='btn btn-danger remove-field-add'><span class='glyphicon glyphicon-remove'></span></button>\
+			</div>\
+			<br class='br'/>"
+			jQuery(input).appendTo('#form_field');
+			jQuery('.remove-field-add').click(function(){
+				jQuery(this).parent().prev().remove();
+				jQuery(this).parent().next().remove();
+				jQuery(this).parent().remove();
+			});
+			num++;
+			//con esto espacamos plos espacios por '_'
+			jQuery('.input-add').keydown(function(e) {
+				if(e.which == 32){
+					jQuery(this).val(jQuery(this).val() + '_')
+					return false;
+				}
+			});
+		});
+		jQuery("#form_field").submit(function(){
+			jQuery("#form_field").append('<input type="hidden" name="type" value="add">');
+			values = jQuery("#form_field").serialize();
+			jQuery('#values').attr('value', values);
+			jQuery.ajax({
+				url: "{{ url('section:update', args=[section.id]) }}",
+				data: jQuery("#form_field").serialize(),
+				type: 'POST',
+				success: function (data, textStatus, jqXHR){
+					bootbox.alert({
+						message: data.message + " <i class='fa fa-hand-o-right'></i>",
+						callback: function (){
+							window.location.reload();
+						}
+					});
+				},
+				error: function (data, textStatus, jqXHR){
+					bootbox.alert({
+						message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
+						callback: function (){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			return false;
+		});
+	});
+	jQuery('.delete_column').click(function(event){
+		jQuery(document).ready(function($) {
+			jQuery('.add_input').remove();
+			jQuery('.br').remove();
+		});
+		jQuery("#form_field").append('<input type="hidden" name="type" value="delete">');
+		var column = jQuery(this).attr('column').toLowerCase();
+		jQuery("#values").attr('value', column.toLowerCase());
+		bootbox.confirm({
+			message: "¿Seguro quieres eliminar este campo? <i class='fa fa-smile-o'><i/>",
+				buttons: {
+					confirm: {
+						label: 'Si',
+						className: 'btn-success'
+					},
+					cancel: {
+						label: 'No',
+						className: 'btn-danger'
+					}
+				},
+				callback: function (result) {
+					if(result){
+						jQuery.ajax({
+							url: "{{ url('section:update', args=[section.id]) }}",
+							type: 'POST',
+							data: jQuery("#form_field").serialize(),
+							success: function (data, textStatus, jqXHR){
+								bootbox.alert({
+									message: data.message + " <i class='fa fa-hand-o-right'></i>",
+									callback: function (){
+										window.location.reload();
+									}
+								});
+							},
+							error: function (data, textStatus, jqXHR){
+								bootbox.alert({
+									message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
+									callback: function (){
+										window.location.reload();
+									}
+								});
+							}
+						});
+					}
+				}
+			});
+			return false;
+		});
+		jQuery(".edit_column").click(function(event){
+			jQuery(document).ready(function($) {
+				jQuery('.add_input').remove();
+				jQuery('.br').remove();
+			});
+			jQuery("#form_field").append('<input type="hidden" name="type" value="edit">');
+			var column = jQuery(this).attr('column');
+			var new_column
+			bootbox.confirm({
+				message: "¿Seguro quieres editar este campo? <i class='fa fa-smile-o'><i/>",
+					buttons: {
+						confirm: {
+							label: 'Si',
+							className: 'btn-success'
+						},
+						cancel: {
+							label: 'No',
+							className: 'btn-danger'
+						}
+					},
+					callback: function (result) {
+						if(result){
+							bootbox.prompt("Renombrar campo: " + column.replace("_", " "),
+							function(new_column){
+								//comprobamos si new_column es null para devolver true
+								// para evitar un error
+								if(!new_column){
+									return true;
+								}
+								jQuery("#form_field").append('<input type="hidden" name="new_name" value="'+new_column+'">');
+								jQuery("#values").attr('value', column.toLowerCase());
+								jQuery.ajax({
+									url: "{{ url('section:update', args=[section.id]) }}",
+									type: 'POST',
+									data: jQuery("#form_field").serialize(),
+									success: function (data, textStatus, jqXHR){
+										bootbox.alert({
+											message: data.message + " <i class='fa fa-hand-o-right'></i>",
+											callback: function (){
+												window.location.reload();
+											}
+										});
+									},
+									error: function (data, textStatus, jqXHR){
+										bootbox.alert({
+											message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
+											callback: function (){
+												window.location.reload();
+											}
+										});
+									}
+								});
+							});
+						}
+					}
+				});
+				return false;
+			});
+			jQuery('#delete_section').click(function(event){
+				jQuery("#form_field").append('<input type="hidden" name="type" value="delete-section">');
+				bootbox.confirm({
+					message: "¿Seguro quieres eliminar esta seccion? <i class='fa fa-smile-o'><i/>",
+						buttons: {
+							confirm: {
+								label: 'Si',
+								className: 'btn-success'
+							},
+							cancel: {
+								label: 'No',
+								className: 'btn-danger'
+							}
+						},
+						callback: function (result) {
+							if(result){
+								jQuery.ajax({
+									url: "{{ url('section:update', args=[section.id]) }}",
+									type: 'POST',
+									data: jQuery("#form_field").serialize(),
+									success: function (data, textStatus, jqXHR){
+										bootbox.alert({
+											message: data.message + " <i class='fa fa-hand-o-right'></i>",
+											callback: function (){
+												window.location = {{ url('section:sections') }}
+											}
+										});
+									},
+									error: function (data, textStatus, jqXHR){
+										bootbox.alert({
+											message: 'Error inesperado <i class="glyphicon glyphicon-alert"></i>',
+											callback: function (){
+												window.location.reload();
+											}
+										});
+									}
+								});
+							}
+						}
+					});
+					return false;
+				});
+			</script>
+			<br />
+			<br />
+			<br />
+			{% endblock %}

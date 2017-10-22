@@ -1,137 +1,137 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    {% if sections %}
-        {% for section, columns in sections.items() %}
-            <br />
-            <div class="container">
-                <h1 class="text-center">Articulos en alerta <i class="fa fa-exclamation-circle"></i></h1>
-                <br />
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr class="red-color font-white">
-                            <th colspan="{{ sections_columns[section] | length + 3}}"><h2 class="text-center">{{ section | title | replace('_', ' ') }} <i class="fa fa-exclamation-circle"></i></h2></th>
-                        </tr>
-                        <tr class="blue-color font-white">
-                            {% for column in sections_columns[section] %}
-                                <th class="text-center">{{ column | title | replace('_', ' ') }}</th>
-                            {% endfor %}
-                            <th class="text-center">Cantidad</th>
-                            <th class="text-center">Costo</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for column in columns %}
-                            <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
-                                {% for i in column %}
-                                    {% if i == 0 %}
-                                        <td>0</td>
-                                        {% elif not i %}
-                                        <td></td>
-                                        {% elif not loop.index == 1 %}
-                                        {% if i == column[-1] %}
-                                            <td>{{ format(i) }}</td>
-                                            {% elif i == column[-2] %}
-                                            <td style="font-weight: bold; color: red">{{ format_quantity(i) }}</td>
-                                        {% else %}
-                                            <td>{{ i }}</td>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if loop.last %}
-                                        <td>
-                                            <div class="btn-group">
-                                                {% if not request.user.username == 'work'%}
-                                                    <button type="button" class="btn btn-success edit-article" data-toggle="tooltip" data-placement="top" title="Editar producto"><span class="glyphicon glyphicon-pencil"></span></button>
-                                                    <button type="button" class="btn btn-danger delete-article" data-toggle="tooltip" data-placement="top" title="Eliminar producto"><span class="glyphicon glyphicon-remove"></span></button>
-                                                {% else %}
-                                                    Ninguna
-                                                {% endif %}
-                                            </div>
-                                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                                        </td>
-                                    {% endif %}
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+{% if sections %}
+{% for section, columns in sections.items() %}
+<br />
+<div class="container">
+  <h1 class="text-center">Articulos en alerta <i class="fa fa-exclamation-circle"></i></h1>
+  <br />
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr class="red-color font-white">
+        <th colspan="{{ sections_columns[section] | length + 3}}"><h2 class="text-center">{{ section | title | replace('_', ' ') }} <i class="fa fa-exclamation-circle"></i></h2></th>
+      </tr>
+      <tr class="blue-color font-white">
+        {% for column in sections_columns[section] %}
+        <th class="text-center">{{ column | title | replace('_', ' ') }}</th>
         {% endfor %}
-    {% else %}
-        <div class="container jumbotron text-center">
-            <h1 class="text-center">No se encontraron alertas <i class="fa fa-check-square-o"></i></h1>
-        </div>
-    {% endif %}
-    <script>
-    //borramos articulo
-    jQuery(document).ready(function() {
+        <th class="text-center">Cantidad</th>
+        <th class="text-center">Costo</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for column in columns %}
+      <tr class="parent" id_article="{{ column[0] }}" article="{{ column[1] }}" max="{{ column[-2] }}" costo="{{ column[-1] }}" section="{{ section }}">
+        {% for i in column %}
+        {% if i == 0 %}
+        <td>0</td>
+        {% elif not i %}
+        <td></td>
+        {% elif not loop.index == 1 %}
+        {% if i == column[-1] %}
+        <td>{{ format(i) }}</td>
+        {% elif i == column[-2] %}
+        <td style="font-weight: bold; color: red">{{ format_quantity(i) }}</td>
+        {% else %}
+        <td>{{ i }}</td>
+        {% endif %}
+        {% endif %}
+        {% if loop.last %}
+        <td>
+          <div class="btn-group">
+            {% if not request.user.username == 'work'%}
+            <button type="button" class="btn btn-success edit-article" data-toggle="tooltip" data-placement="top" title="Editar producto"><span class="glyphicon glyphicon-pencil"></span></button>
+            <button type="button" class="btn btn-danger delete-article" data-toggle="tooltip" data-placement="top" title="Eliminar producto"><span class="glyphicon glyphicon-remove"></span></button>
+            {% else %}
+            Ninguna
+            {% endif %}
+          </div>
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+{% else %}
+<div class="container jumbotron text-center">
+  <h1 class="text-center">No se encontraron alertas <i class="fa fa-check-square-o"></i></h1>
+</div>
+{% endif %}
+<script>
+  //borramos articulo
+  jQuery(document).ready(function() {
     jQuery(".delete-article").click(function(event) {
-    var parent = jQuery(this).parent().parent().parent();
-    var id = parent.attr("id_article");
-    var section = parent.attr("section");
-    //datos apra enviar por ajax
-    var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
-    
-    bootbox.confirm({
-    message: "¿Seguro quieres eliminar el articulo?",
-    buttons: {
-    confirm: {
-    label: 'Si',
-    className: 'btn-success'
-    },
-    cancel: {
-    label: 'No',
-    className: 'btn-danger'
-    }
-    },
-    callback: function (result){
-    if(result){
-    jQuery.ajax({
-    url: '{{ url("article:delete") }}',
-    type: 'POST',
-    data: data,
-    success: function (data, textStatus, jqXHR){
-    bootbox.alert({
-    message: data.message + " <i class='fa fa-smile-o'></i>",
-    callback: function (){
-    window.location.reload();
-    }
+      var parent = jQuery(this).parent().parent().parent();
+      var id = parent.attr("id_article");
+      var section = parent.attr("section");
+      //datos apra enviar por ajax
+      var data = "csrfmiddlewaretoken={{ csrf_token }}&id_article=" + id +"&section="+section;
+      
+      bootbox.confirm({
+        message: "¿Seguro quieres eliminar el articulo?",
+        buttons: {
+          confirm: {
+            label: 'Si',
+            className: 'btn-success'
+          },
+          cancel: {
+            label: 'No',
+            className: 'btn-danger'
+          }
+        },
+        callback: function (result){
+          if(result){
+            jQuery.ajax({
+              url: '{{ url("article:delete") }}',
+              type: 'POST',
+              data: data,
+              success: function (data, textStatus, jqXHR){
+                bootbox.alert({
+                  message: data.message + " <i class='fa fa-smile-o'></i>",
+                  callback: function (){
+                    window.location.reload();
+                  }
+                });
+              },
+              error: function (data, textStatus, jqXHR){
+                bootbox.alert({
+                  message: data.message,
+                  callback: function (){
+                    window.location.reload();
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
     });
-    },
-    error: function (data, textStatus, jqXHR){
-    bootbox.alert({
-    message: data.message,
-    callback: function (){
-    window.location.reload();
-    }
-    });
-    }
-    });
-    }
-    }
-    });
-    });
-    });
-    //editar articulo
-    jQuery(document).ready(function() {
+  });
+  //editar articulo
+  jQuery(document).ready(function() {
     jQuery(".edit-article").click(function(event){
-    var parent = jQuery(this).parent().parent().parent();
-    var id = parent.attr("id_article");
-    var section = parent.attr("section");
-    jQuery("#edit-article-id").val(id);
-    jQuery("#edit-article-section").val(section);
-    jQuery("#edit-article-form").submit();
+      var parent = jQuery(this).parent().parent().parent();
+      var id = parent.attr("id_article");
+      var section = parent.attr("section");
+      jQuery("#edit-article-id").val(id);
+      jQuery("#edit-article-section").val(section);
+      jQuery("#edit-article-form").submit();
     });
-    });
-    </script>
-    <!-- formulario para edita articulo -->
-    <form action="{{ url('article:edit') }}" id="edit-article-form" method="POST">
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <input type="hidden" name="edit-article-id" id="edit-article-id">
-        <input type="hidden" name="edit-article-section" id="edit-article-section">
-    </form>
-    <!-- fin formulario -->
-    <br />
-    <br />
-    <br />
+  });
+</script>
+<!-- formulario para edita articulo -->
+<form action="{{ url('article:edit') }}" id="edit-article-form" method="POST">
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <input type="hidden" name="edit-article-id" id="edit-article-id">
+  <input type="hidden" name="edit-article-section" id="edit-article-section">
+</form>
+<!-- fin formulario -->
+<br />
+<br />
+<br />
 {% endblock %}

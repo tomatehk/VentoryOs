@@ -1,15 +1,15 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    <div class="container">
-        <div class="jumbotron alert-danger">
-            <h2>¿Seguro quieres eliminar esta venta?<h2>
-            <h3>Articulo: {{ sale }}</h3>
-            <br />
-            <form action="" method="post">
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                <input class="btn btn-danger btn-lg" type="submit" value="Confirmar" />
-                <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-primary btn-lg">Volver</a>
-            </form>
-        </div>
+<div class="container">
+  <div class="jumbotron alert-danger">
+    <h2>¿Seguro quieres eliminar esta venta?<h2>
+      <h3>Articulo: {{ sale }}</h3>
+      <br />
+      <form action="" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <input class="btn btn-danger btn-lg" type="submit" value="Confirmar" />
+        <a href="{{ url('shopping_cart:sales_record') }}" class="btn btn-primary btn-lg">Volver</a>
+      </form>
     </div>
-{% endblock %}
+  </div>
+  {% endblock %}
