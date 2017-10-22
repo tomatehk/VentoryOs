@@ -45,8 +45,10 @@ def getCOlumnsSort(details):
 def connectDb():
     """Connexion rapida por via psycopg"""
     try:
-        connectdb = psycopg2.connect(database='ventoryos', user='postgres',
-                                     password='ventoryos', host='localhost')
+        connectdb = psycopg2.connect(
+            database='ventoryos', user='postgres',
+            password='storemg', host='localhost'
+        )
     except psycopg2.Error as e:
         return e
 
@@ -66,8 +68,10 @@ def increaseArticles(section, percentage):
     for z in todo:
         # hacemos el calculo y modificamo el precio aumentado su precio
         new_price = ((float(z[1]) * percentage) / 100) + float(z[1])
-        cursor.execute("UPDATE " + section + " SET precio=%s WHERE id=%s",
-                       (round(new_price, 2), z[0]))
+        cursor.execute(
+            "UPDATE " + section + " SET precio=%s WHERE id=%s",
+            (round(new_price, 2), z[0])
+        )
 
     # agregamos al registro de incrementos
     increase_reg = Increase(section=section, increase=percentage, increase_date=timezone.now())
@@ -123,6 +127,20 @@ def get_sales():
 def get_total_money():
     """Obtenemos el total de dinero hecho"""
     total = Sale.objects.all().aggregate(Sum('price'))
+
+    return float((total['price__sum'])) if total['price__sum'] else 0.00
+
+
+def get_total_money_ef():
+    """Obtenemos el total de dinero hecho"""
+    total = Sale.objects.filter(type_pay='ef').aggregate(Sum('price'))
+
+    return float((total['price__sum'])) if total['price__sum'] else 0.00
+
+
+def get_total_money_po():
+    """Obtenemos el total de dinero hecho"""
+    total = Sale.objects.filter(type_pay='po').aggregate(Sum('price'))
 
     return float((total['price__sum'])) if total['price__sum'] else 0.00
 

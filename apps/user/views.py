@@ -11,7 +11,7 @@ from django.contrib.auth.models import Permission, User
 # veificar password
 from django.contrib.auth.hashers import check_password
 # importamos Sale para poder borrar todo el registro
-from ..shopping_cart.models import Sale, Client
+from ..shopping_cart.models import Sale, Client, Business
 
 
 def active(request):
@@ -51,10 +51,15 @@ class Login(View):
 
             return HttpResponseRedirect(reverse('default'))
         else:
-            return render(request, self.template_name,
-                          {'error':
-                           {'message': '¡Error contraseña invalida!',
-                            'user': user}})
+            return render(
+                request, self.template_name,
+                {'error':
+                    {
+                        'message': '¡Error contraseña invalida!',
+                        'user': user
+                    }
+                }
+            )
 
 
 def logout_view(request):
@@ -68,8 +73,12 @@ class Config(PermissionRequiredMixin, LoginRequiredMixin, View):
     permission_required = 'section.add_section'
 
     def get(self, request):
+        try:
+            business = Business.objects.get(pk=1)
+        except Business.DoesNotExist:
+            business = False
 
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'business': business})
 
     def post(self, request, *args, **kwargs):
         # Verificamos la accion que se realizara
@@ -77,7 +86,36 @@ class Config(PermissionRequiredMixin, LoginRequiredMixin, View):
         user = request.user
 
         try:
-            if action == 'change-password-admin' and user.username == 'admin':
+            if action == 'business-create' and user.username == 'admin':
+                business = request.POST['business']
+                it = request.POST['it']
+
+                if Business.objects.all():
+                    return HttpResponseRedirect(reverse('user:config'))
+
+                Business.objects.create(
+                    name=business, it=it
+                )
+
+                return HttpResponseRedirect(reverse('user:config'))
+
+            elif action == 'business-update' and user.username == 'admin':
+                try:
+                    business = Business.objects.get(pk=1)
+                    
+                except Business.DoesNotExist:
+                    return HttpResponseRedirect(reverse('user:config'))
+
+                business_new = request.POST['business']
+                it_new = request.POST['it']
+
+                business.name = business_new
+                business.it = it_new
+                business.save()
+
+                return HttpResponseRedirect(reverse('user:config'))
+
+            elif action == 'change-password-admin' and user.username == 'admin':
                 password_act = request.POST['pwd-admin']
                 # comprobamos la contraseña del admin
                 if check_password(password_act, user.password):
@@ -93,12 +131,12 @@ class Config(PermissionRequiredMixin, LoginRequiredMixin, View):
                         login(request, user_login)
 
                     # creamos el mensaje que se realizo con satisfaccion
-                    message = 'Contraseña cambiada con exito'
+                    message = 'Contraseña actualizada con exito'
                 else:
                     message = 'Contraseña invalida'
                     return render(request, self.template_name, {'messsage': message, 'error': True})
 
-            elif action == 'change-password-work':
+            elif action == 'change-password-work' and user.username == 'admin':
                 password_act = request.POST['pwd-admin']
                 # obtenemos el usuario trabajador
                 user_work = User.objects.get(username='work')
@@ -110,18 +148,27 @@ class Config(PermissionRequiredMixin, LoginRequiredMixin, View):
                     user_work.save()
 
                     # mensaje de confirmacion
-                    message = 'Perfecto contraseña cambiada'
+                    message = 'Perfecto contraseña actualizada'
                 else:
                     message = 'Error contraseña invalida'
                     return render(request, self.template_name, {'messsage': message, 'error': True})
 
-            elif action == 'clear-registry':
+            else:
                 # obtenemos todas las ventas y las borramos
                 Sale.objects.all().delete()
                 Client.objects.all().delete()
 
                 return JsonResponse(status=200)
+
         except Exception as e:
             return render(request, self.template_name, {'messsage': str(e)})
 
         return render(request, self.template_name, {'messsage': message})
+
+
+class Contact(LoginRequiredMixin, View):
+    template_name = 'user/contact.html'
+
+    def get(self, request):
+
+        return render(request, self.template_name)

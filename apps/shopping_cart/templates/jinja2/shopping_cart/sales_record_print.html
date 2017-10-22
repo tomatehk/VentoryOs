@@ -1,0 +1,53 @@
+{% extends "bases/base.html" %}
+{% block body %}
+{% if not registry %}
+<div class="container jumbotron text-center">
+  <h1 class="text-center">Registro de ventas vacío <i class="fa fa-exclamation-triangle"></i></h1>
+</div>
+{% else %}
+<script>
+  jQuery(document).ready(function(){
+    jQuery("#print").click(function(){
+      window.print();
+    });
+  });
+</script>
+<div class="container">
+  <h2 class="text-center"><button type="" class="btn btn-lg btn-primary print" id="print"><span class="fa fa-print"></span> Imprimir</button></h2>
+  <h1 class="text-center">Registro de ventas <i class="fa fa-list-alt"></i></h1>
+  <br />
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr class="">
+        <th class="text-center">Sección <b><span class="glyphicon glyphicon-list-alt"></b></span></i></th>
+        <th class="text-center">Artículo <i class="fa fa-th-large"></i></th>
+        <th class="text-center">Cantidad <i class="fa fa-hashtag"></i></th>
+        <th class="text-center">Precio <i class="fa fa-dollar"></i></th>
+        <th class="text-center">Cliente <i class="fa fa-id-card"></i></th>
+        <th class="text-center">Tipo de pago <i class="fa fa-money" aria-hidden="true"></i></th>
+        <th class="text-center">Fecha <i class="fa fa-calendar"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in registry %}
+      <tr>
+        <td>{{ x.section }}</td>
+        <td>{{ x.article }}</td>
+        <td>{{ x.quantity }}</td>
+        <td>{{ format(x.price) }}</td>
+        <td>{{ x.client }}</td>
+        <td>{% if x.type_pay == 'ef' %}Efectivo{% else %}Tarjeta{% endif %}</td>
+        <td>{{ x.pub_date | datetimeformat }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="">
+        <td colspan="7"><b>Total ventas: Bs {{ format(get_total_money()) }}</b></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br />
+<br />
+<br />
+{% endif %}
+{% endblock %}

@@ -40,12 +40,15 @@ def environment(**options):
         'id': 0,
         'get_sales': get_sales,
         'get_total_money': get_total_money,
+        'get_total_money_ef': get_total_money_ef,
+        'get_total_money_po': get_total_money_po,
         'get_total_articles': get_total_articles,
         'get_user': getUser,
         'alerts': getAlerts,
         'format': format_money,
         'format_quantity': format_quantity,
         'get_total_money_articles': get_total_money_articles,
+        'str': str
     })
 
     return env

@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ventoryos',
         'USER': 'postgres',
-        'PASSWORD': 'ventoryos',
+        'PASSWORD': 'storemg',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -128,10 +128,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+############## EMAIL ##############
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_TLS, EMAIL_POR estan configuradas para usar con gmail
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com' # host smtp
+EMAIL_HOST_USER = 'ventoryostest@gmail.com' # e-mail
+EMAIL_HOST_PASSWORD = 'ventoryos1234' # contraseña
+EMAIL_PORT = 587
+############## EMAIL ##############
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/Caracas'
@@ -153,5 +160,5 @@ STATIC_URL = '/static/'
 "Inportando la carpeta static en el projecto"
 
 STATICFILES_DIRS = [
-    "/home/brandomhk/workspace/ventoryos/ventoryos/static/"
+    "/home/brandom/workspace_ven/VentoryOs/ventoryos/static/"
 ]

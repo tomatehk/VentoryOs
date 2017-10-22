@@ -1,88 +1,88 @@
 {% extends 'bases/base.html' %}
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr class="orange-color">
-                            <td><b>Secciones</b></td>
-                            <td><a href="#" id="add_section" active="no" class="btn btn-primary">Agregar <span class="glyphicon glyphicon-plus"></span></a></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for section in sections %}
-                            <tr>
-                                <td colspan="2"><a href="{{ url('section:information', args=[section.id]) }}"><span class="glyphicon glyphicon-list-alt"></span> <b>{{ section.name | title | replace('_', ' ') }}</b></a></td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="2"><h2>No existen secciones creadas <i class="fa fa-frown-o"></i></h2></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                    <script>
-                    jQuery(document).ready(function($) {
-                    jQuery('#add_section').click(function(event) {
-                    jQuery(this).attr('class', 'btn btn-primary disabled')
-                    if(jQuery('#add_section').attr('active') == 'no'){
-                    //agregamos el formulario para la nueva seccion
-                    jQuery('#add_section').after(function(event){
-                    var form = "<br />\
-                    <form method='post' id='form_add_section'>\
-                        <div class='form-group'>\
-                            <label for='name_section'>Nombre:</label>\
-                            <input type='text' name='section_name' id='name_section' class='form-control' required autocomplete='off'/>\
-                            <input type='submit' value='Agregar' class='btn btn-success'/>\
-                            <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'>\
-                        </div>\
-                    </form>"
-                    return form;
-                    });
-                    //agregamos el atrbuto para que no salgan mas input
-                    jQuery('#add_section').attr('active', 'yes');
-                    }
-                    jQuery('#form_add_section').submit(function(event) {
-                    jQuery.ajax({
-                    url: "{{ url('section:add') }}",
-                    data: jQuery("#form_add_section").serialize(),
-                    type: 'POST',
-                    success: function (data, textStatus, jqXHR){
+<div class="container">
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr class="orange-color">
+            <td><b>Secciones</b></td>
+            <td><a href="#" id="add_section" active="no" class="btn btn-primary">Agregar <span class="glyphicon glyphicon-plus"></span></a></td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for section in sections %}
+          <tr>
+            <td colspan="2"><a href="{{ url('section:information', args=[section.id]) }}"><span class="glyphicon glyphicon-list-alt"></span> <b>{{ section.name | title | replace('_', ' ') }}</b></a></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2"><h2>No existen secciones creadas <i class="fa fa-frown-o"></i></h2></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <script>
+          jQuery(document).ready(function($) {
+            jQuery('#add_section').click(function(event) {
+              jQuery(this).attr('class', 'btn btn-primary disabled')
+              if(jQuery('#add_section').attr('active') == 'no'){
+                //agregamos el formulario para la nueva seccion
+                jQuery('#add_section').after(function(event){
+                  var form = "<br />\
+                  <form method='post' id='form_add_section'>\
+                    <div class='form-group'>\
+                      <label for='name_section'>Nombre:</label>\
+                      <input type='text' name='section_name' id='name_section' class='form-control' required autocomplete='off'/>\
+                      <input type='submit' value='Agregar' class='btn btn-success'/>\
+                      <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'>\
+                    </div>\
+                  </form>"
+                  return form;
+                });
+                //agregamos el atrbuto para que no salgan mas input
+                jQuery('#add_section').attr('active', 'yes');
+              }
+              jQuery('#form_add_section').submit(function(event) {
+                jQuery.ajax({
+                  url: "{{ url('section:add') }}",
+                  data: jQuery("#form_add_section").serialize(),
+                  type: 'POST',
+                  success: function (data, textStatus, jqXHR){
                     var dialog = bootbox.dialog({
-                    title: 'Cargando',
-                    message: '<p><i class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i> Construyendo seccíon</p>'
+                      title: 'Cargando',
+                      message: '<p><i class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i> Construyendo seccíon</p>'
                     });
                     dialog.init(function(){
-                    setTimeout(function(){
-                    dialog.find('.bootbox-body').html('Perfecto seccíon creada! <span class="   glyphicon glyphicon-ok"></span>');
-                    setTimeout(function(){
-                    window.location.reload()
-                    }, 1000);
-                    }, 3000);
+                      setTimeout(function(){
+                        dialog.find('.bootbox-body').html('Perfecto seccíon creada! <span class="   glyphicon glyphicon-ok"></span>');
+                        setTimeout(function(){
+                          window.location.reload()
+                        }, 1000);
+                      }, 3000);
                     });
-                    },
-                    error: function (request, status, error){
+                  },
+                  error: function (request, status, error){
                     bootbox.alert({
-                    message: 'Error al crear seccíon <span class="glyphicon glyphicon-alert"></span>',
-                    callback: function (){
-                    window.location.reload()
-                    }
+                      message: 'Error al crear seccíon <span class="glyphicon glyphicon-alert"></span>',
+                      callback: function (){
+                        window.location.reload()
+                      }
                     });
-                    }
-                    });
-                    return false;
-                    });
-                    });
-                    
-                    });
-                    </script>
-                </table>
-            </div>
-            <div class="col-md-3"></div>
-        </div>
+                  }
+                });
+                return false;
+              });
+            });
+            
+          });
+        </script>
+      </table>
     </div>
-    <br />
-    <br />
-    <br />
+    <div class="col-md-3"></div>
+  </div>
+</div>
+<br />
+<br />
+<br />
 {% endblock %}

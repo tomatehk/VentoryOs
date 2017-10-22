@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ventory Os</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div class="container">
+    <br />
+    <table class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <td colspan="3" class="text-left">
+            <h3><b>{{ business.name }}</b></h3>
+          </td>
+          <td colspan="3" class="text-right">
+            <h4>
+              <b>Factura: 
+                {% if registry[0].id_check >= 10 %}
+                000{{ registry[0].id_check }}
+                {% set check_number = '000'+str(registry[0].id_check) %}
+                
+                {% elif registry[0].id_check >= 100 %}
+                00{{ registry[0].id_check }}
+                {% set check_number = '00'+str(registry[0].id_check) %}
+                
+                {% elif registry[0].id_check >= 1000 %}
+                0{{ registry[0].id_check }}
+                {% set check_number = '0'+str(registry[0].id_check) %}
+                
+                {% elif registry[0].id_check >= 10000 %}
+                {{ registry[0].id_check }}
+                {% set check_number = str(registry[0].id_check) %}
+                
+                {% else %}
+                0000{{ registry[0].id_check }}
+                {% set check_number = '0000'+str(registry[0].id_check) %}
+                
+                {% endif %}
+                <input type="hidden" name="check_number" value="{{ check_number }}" form="form-email">
+              </b>
+              <br />
+              <b>It: {{ business.it }}</b>
+            </h4>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-center">Sección</th>
+          <th class="text-center">Artículo</th>
+          <th class="text-center">Cantidad</th>
+          <th class="text-center">Precio</th>
+          <th class="text-center">Cliente</th>
+          <th class="text-center">Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for x in registry %}
+        <tr>
+          <td>{{ x.section }}</td>
+          <td>{{ x.article }}</td>
+          <td>{{ x.quantity }}</td>
+          <td>{{ format(x.price) }}</td>
+          <td>{{ x.client }}</td>
+          <td>{{ x.pub_date | datetimeformat }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="6" class="text-right"><b>Subtotal {{ format(total - total*12/100) }}</b></td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right"><b>Iva 12% {{ format(total*12/100) }}</b></td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right"><b>Total venta: Bs {{ format(total) }}</b></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h5>Ventory Os | <b style="color: red">tomatehk</b></h5>
+  </div>
+</body>
+</html>

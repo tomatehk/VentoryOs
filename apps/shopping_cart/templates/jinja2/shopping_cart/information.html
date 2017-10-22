@@ -1,44 +1,52 @@
 {% extends "bases/base.html" %}
 {% block body %}
-    <div class="container text-center">
-        <h1><i class="fa fa-info-circle"></i>nformacion</h1>
-        <br />
-        <div class="row">
-            <div class="col-md-3 blue-color img-rounded font-white">
-                <h2><i class="fa fa-money fa-3x"></i></h2>
-                <p><b>Total dinero en ventas:</b> {{ format(get_total_money()) }}</p>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-4 green-color img-rounded">
-                <h2><i class="fa fa-money fa-3x"></i></h2>
-                <p><b>Total dinero en articulos:</b> {{ format(get_total_money_articles()) }}</p>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3 blue-color img-rounded font-white">
-                <h2><i class="fa fa-th-large fa-3x"></i></h2>
-                <p><b>Cantidad de articulos:</b> {{ format_quantity(get_total_articles()) }}</p>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-md-1"></div>
-            <a href="{{ url('shopping_cart:sales_record') }}">
-                <div class="col-md-4 blue-color img-rounded font-white">
-                    <h2><i class="fa fa-bar-chart fa-3x"></i></h2>
-                    <p><b>Ventas:</b> {{ get_sales() }}</p>
-                </div>
-            </a>
-            <div class="col-md-2"></div>
-            <a href="{{ url('article:article_alerts') }}">
-                <div class="col-md-4 blue-color img-rounded font-white">
-                    <h2 {% if alerts() %}style="color: red"{% endif %}><i class="fa fa-exclamation-circle fa-3x" ></i></i></h2>
-                    <p {% if alerts() %}style="color: red; font-weight: bold;"{% endif %}><b>Alertas:</b> {% if alerts() %}{{ alerts()[0] }}{% else %}0{% endif%}</p>
-                </div>
-            </a>
-            <div class="col-md-1"></div>
-        </div>
+<div class="container text-center">
+  <h1><i class="fa fa-info-circle"></i>nformacion</h1>
+  <br />
+  <div class="row">
+    <div class="col-sm-3 blue-color img-rounded font-white">
+      <h2><i class="fa fa-money fa-3x"></i></h2>
+      <p><b>Total dinero en ventas:</b> {{ format(get_total_money()) }}</p>
     </div>
-    <br />
-    <br />
-    <br />
+    <div class="col-sm-1"></div>
+    <div class="col-sm-4 green-color img-rounded font-white">
+      <h2><i class="fa fa-money fa-3x"></i></h2>
+      <p><b>Total dinero en articulos:</b> {{ format(get_total_money_articles()) }}</p>
+    </div>
+    <div class="col-sm-1"></div>
+    <div class="col-sm-3 blue-color img-rounded font-white">
+      <h2><i class="fa fa-th-large fa-3x"></i></h2>
+      <p><b>Cantidad de articulos:</b> {{ format_quantity(get_total_articles()) }}</p>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-sm-3 blue-color img-rounded font-white">
+      <h2><i class="fa fa-money fa-3x"></i></h2>
+      <p><b>Total dinero en efectivo:</b> {{ format(get_total_money_ef()) }}</p>
+    </div>
+    <div class="col-sm-1"></div>
+    <div class="col-sm-4 blue-color img-rounded font-white">
+      <h2><i class="fa fa-credit-card fa-3x"></i></h2>
+      <p><b>Total dinero en pago por punto:</b> {{ format(get_total_money_po()) }}</p>
+    </div>
+    <div class="col-sm-1"></div>
+    <div class="col-sm-3 blue-color img-rounded font-white">
+      <h2><i class="fa fa-bar-chart fa-3x"></i></h2>
+      <p><b>Ventas:</b> {{ get_sales() }}</p>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <a href="{{ url('article:article_alerts') }}">
+      <div class="col-sm-12 blue-color img-rounded font-white">
+        <h2 {% if alerts() %}style="color: red"{% endif %}><i class="fa fa-exclamation-circle fa-3x" ></i></i></h2>
+        <p {% if alerts() %}style="color: red; font-weight: bold;"{% endif %}><b>Alertas:</b> {% if alerts() %}{{ alerts()[0] }}{% else %}0{% endif%}</p>
+      </div>
+    </a>
+  </div>
+</div>
+<br />
+<br />
+<br />
 {% endblock %}
