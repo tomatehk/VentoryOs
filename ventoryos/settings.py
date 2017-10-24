@@ -134,9 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS, EMAIL_POR estan configuradas para usar con gmail
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com' # host smtp
-EMAIL_HOST_USER = 'ventoryostest@gmail.com' # e-mail
-EMAIL_HOST_PASSWORD = 'ventoryos1234' # contraseña
+
+EMAIL_HOST = False # host smtp
+EMAIL_HOST_USER = False # e-mail
+EMAIL_HOST_PASSWORD = False # contraseña
 EMAIL_PORT = 587
 ############## EMAIL ##############
 LANGUAGE_CODE = 'en-us'

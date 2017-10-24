@@ -47,7 +47,7 @@ def connectDb():
     try:
         connectdb = psycopg2.connect(
             database='ventoryos', user='postgres',
-            password='storemg', host='localhost'
+            password='ventoryos', host='localhost'
         )
     except psycopg2.Error as e:
         return e
