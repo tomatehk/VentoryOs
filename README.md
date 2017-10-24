@@ -10,10 +10,12 @@ Modulo necesario para apache:
 + mod_wsgi
 
 Modulos necesarios para el entorno virtual de python:
-+ Django 1.11
-+ psycopg2
-+ jinja2
-+ pyyaml
++ django==1.11
++ psycopg2==2.7.3.1
++ pyyaml==3.12
++ jinja2==2.4.0
++ pdfkit==0.6.1
++ urllib3==1.22
 
 
 
