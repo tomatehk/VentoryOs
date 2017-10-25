@@ -8,11 +8,11 @@ Modulos necesarios para el entorno virtual de python:
 + jinja2==2.4.0
 + pdfkit==0.6.1
 + urllib3==1.22
-Contacto
+Contacto:
 + brandomhk@gmail.com
 + andersontejada1997@gmail.com
 + tomatehk@gmail.com
-Webs
+Webs:
 + http://tomatehk.alwaysdata.net/
 + http://ventoryos.webcindario.com
 
