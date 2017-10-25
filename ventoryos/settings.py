@@ -162,5 +162,5 @@ STATIC_URL = '/static/'
 
 # configure your url for statics
 STATICFILES_DIRS = [
-    "/home/brandom/workspace_ven/VentoryOs/ventoryos/static/"
+    "/opt/ventoryos/VentoryOs/ventoryos/static/"
 ]
