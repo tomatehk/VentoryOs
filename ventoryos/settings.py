@@ -160,6 +160,7 @@ LOGIN_URL = '/user/login'
 STATIC_URL = '/static/'
 "Inportando la carpeta static en el projecto"
 
+# configure your url for statics
 STATICFILES_DIRS = [
     "/home/brandom/workspace_ven/VentoryOs/ventoryos/static/"
 ]
