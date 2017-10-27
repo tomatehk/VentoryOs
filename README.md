@@ -19,4 +19,4 @@ Webs:
 + http://ventoryos.webcindario.com
 
 Archivos para instalacion facil:
-http://adf.ly/1nPijV
+http://twineer.com/5N6x
