@@ -158,7 +158,7 @@ LOGIN_URL = '/user/login'
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-"Inportando la carpeta static en el projecto"
+"Importando la carpeta static en el proyecto"
 
 # configure your url for statics
 STATICFILES_DIRS = [
