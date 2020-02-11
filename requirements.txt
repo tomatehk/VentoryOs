@@ -1,4 +1,4 @@
-django==1.11
+django==1.11.28
 psycopg2==2.7.3.1
 pyyaml==3.12
 jinja2==2.4.0
